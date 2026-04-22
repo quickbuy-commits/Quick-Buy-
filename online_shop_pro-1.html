@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" id="themeColorMeta" content="#6c2bd9">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="QuickBuy">
+<title>QuickBuy — India Ka Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ===== THEME ===== */
+[data-theme="light"]{
+  --bg:#f5f3ff;--surface:#fff;--s2:#f8f7ff;--s3:#f0eeff;
+  --border:#e5e7eb;--border2:#ddd6fe;
+  --text:#1e1b4b;--muted:#6b7280;--light:#9ca3af;
+  --card:#fff;--input:#fff;
+}
+[data-theme="dark"]{
+  --bg:#0f0e17;--surface:#1a1828;--s2:#221f35;--s3:#2a2740;
+  --border:#2d2a45;--border2:#3d3960;
+  --text:#f0eeff;--muted:#9d9ab8;--light:#6b6890;
+  --card:#1a1828;--input:#221f35;
+}
+:root{
+  --p:#6c2bd9;--p2:#8b5cf6;--p3:#ede9fe;
+  --g:#10b981;--g2:#d1fae5;
+  --o:#f59e0b;--r:#ef4444;--r2:#fee2e2;
+  --r8:8px;--r12:12px;--r16:16px;--r99:99px;
+  --sh:0 2px 12px rgba(108,43,217,.08);
+  --sh2:0 8px 32px rgba(108,43,217,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+img{display:block;max-width:100%;}
+
+/* ===== SPLASH ===== */
+#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(145deg,#3b0764,#6c2bd9 55%,#4f1c9e);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+.sp-ring{position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.07);animation:spRing 4s linear infinite;}
+.r1{width:300px;height:300px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s;}
+.r2{width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:.5s;}
+.r3{width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s;}
+@keyframes spRing{0%{opacity:.5;transform:translate(-50%,-50%) scale(.8);}50%{opacity:.1;}100%{opacity:.5;transform:translate(-50%,-50%) scale(1.1);}}
+.sp-center{position:relative;z-index:1;text-align:center;}
+.sp-ico{width:100px;height:100px;background:rgba(255,255,255,.12);border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:54px;margin:0 auto 18px;border:2px solid rgba(255,255,255,.18);backdrop-filter:blur(10px);animation:spPop .7s cubic-bezier(.34,1.56,.64,1) .3s both;}
+@keyframes spPop{from{opacity:0;transform:scale(.2);}to{opacity:1;transform:scale(1);}}
+.sp-name{font-family:'Bebas Neue',sans-serif;font-size:62px;color:#fff;letter-spacing:4px;animation:spUp .5s ease .8s both;}
+.sp-tag{font-size:14px;color:rgba(255,255,255,.6);font-weight:700;animation:spUp .5s ease 1s both;margin-top:4px;}
+@keyframes spUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.sp-bar{margin-top:44px;width:180px;height:3px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;animation:spUp .4s ease 1.2s both;}
+.sp-fill{height:100%;background:#fff;border-radius:99px;width:0;animation:spFill 2s ease 1.3s forwards;}
+@keyframes spFill{to{width:100%;}}
+.sp-bottom{position:absolute;bottom:30px;font-size:11px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:1.5px;animation:spUp .4s ease 1.5s both;}
+
+/* ===== TOAST ===== */
+.toast-wrap{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:8000;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;}
+.toast{background:var(--text);color:var(--bg);padding:11px 18px;border-radius:var(--r12);font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 32px rgba(0,0,0,.25);opacity:0;transform:translateY(-20px) scale(.95);transition:.35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;pointer-events:auto;max-width:90vw;}
+.toast.show{opacity:1;transform:translateY(0) scale(1);}
+.toast.ts{background:var(--g);color:#fff;}.toast.te{background:var(--r);color:#fff;}.toast.ti{background:var(--p);color:#fff;}
+
+/* ===== INSTALL MODAL ===== */
+.install-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:7000;display:none;align-items:flex-end;backdrop-filter:blur(6px);}
+.install-modal.open{display:flex;}
+.install-sheet{background:var(--surface);border-radius:24px 24px 0 0;padding:24px 20px 36px;width:100%;}
+.install-sheet h3{font-size:19px;font-weight:900;margin-bottom:6px;}
+.install-sheet p{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.install-steps{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.istep{display:flex;align-items:center;gap:12px;padding:12px;background:var(--s2);border-radius:var(--r12);border:1px solid var(--border);}
+.istep-num{width:32px;height:32px;background:var(--p3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--p);flex-shrink:0;}
+.istep-txt strong{font-size:13px;font-weight:800;display:block;}
+.istep-txt small{font-size:12px;color:var(--muted);}
+.ios-hint{background:var(--p3);border-radius:var(--r12);padding:12px;font-size:13px;color:var(--p);font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+
+/* ===== AUTH ===== */
+#authScreen{display:none;position:fixed;inset:0;background:var(--bg);z-index:600;overflow-y:auto;}
+.auth-top{background:linear-gradient(135deg,#3b0764,#6c2bd9);padding:48px 24px 60px;text-align:center;position:relative;overflow:hidden;}
+.auth-top::after{content:'';position:absolute;bottom:-28px;left:0;right:0;height:56px;background:var(--bg);border-radius:50% 50% 0 0;}
+.auth-logo{width:66px;height:66px;background:rgba(255,255,255,.13);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 12px;border:2px solid rgba(255,255,255,.2);}
+.auth-top h1{font-family:'Bebas Neue',sans-serif;font-size:40px;color:#fff;letter-spacing:2px;}
+.auth-top p{color:rgba(255,255,255,.6);font-size:13px;margin-top:4px;font-weight:600;}
+.auth-body{padding:26px 18px 40px;}
+.atabs{display:flex;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r12);padding:4px;margin-bottom:20px;gap:4px;}
+.atab{flex:1;padding:10px;text-align:center;border-radius:10px;font-weight:900;font-size:14px;color:var(--muted);cursor:pointer;transition:.2s;}
+.atab.on{background:var(--p);color:#fff;box-shadow:0 4px 14px rgba(108,43,217,.3);}
+.iw{display:flex;flex-direction:column;gap:5px;margin-bottom:13px;}
+.iw label{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;}
+.iwr{position:relative;}
+.iwr i{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--light);cursor:pointer;font-size:15px;}
+.inp{background:var(--input);border:1.5px solid var(--border);color:var(--text);padding:13px 16px;border-radius:var(--r12);font-size:15px;font-family:'Nunito',sans-serif;font-weight:600;width:100%;transition:.2s;outline:none;}
+.inp:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(108,43,217,.1);}
+.inp.pr{padding-right:44px;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cta{width:100%;padding:15px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border:none;border-radius:var(--r12);font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(108,43,217,.3);transition:.2s;letter-spacing:.3px;}
+.cta:active{transform:scale(.98);}
+
+/* ===== APP ===== */
+#app{display:none;}
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 13px;display:flex;align-items:center;gap:9px;position:sticky;top:0;z-index:400;box-shadow:var(--sh);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:25px;color:var(--p);letter-spacing:1px;flex-shrink:0;}
+.sw{flex:1;position:relative;}
+.si{background:var(--s2);border:1.5px solid var(--border);color:var(--text);padding:9px 13px 9px 34px;border-radius:var(--r12);font-size:14px;font-family:'Nunito',sans-serif;font-weight:600;width:100%;outline:none;transition:.2s;}
+.si:focus{border-color:var(--p);background:var(--input);}
+.sw i{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--light);font-size:13px;}
+.hb{width:37px;height:37px;background:var(--s2);border:1.5px solid var(--border);border-radius:var(--r12);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--muted);flex-shrink:0;transition:.2s;}
+.hb:hover{border-color:var(--p);color:var(--p);}
+.hbdot{position:absolute;top:-4px;right:-4px;background:var(--r);color:#fff;font-size:9px;min-width:16px;height:16px;border-radius:99px;display:none;align-items:center;justify-content:center;font-weight:900;padding:0 3px;border:2px solid var(--surface);}
+
+/* ===== BOTTOM NAV ===== */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:400;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 12px rgba(0,0,0,.06);}
+.bi{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;cursor:pointer;color:var(--light);gap:2px;transition:.2s;position:relative;}
+.bi.on{color:var(--p);}
+.bi i{font-size:19px;transition:.2s;}
+.bi.on i{transform:scale(1.15);}
+.bi span{font-size:10px;font-weight:900;}
+.bdot{position:absolute;top:6px;right:calc(50% - 13px);width:6px;height:6px;background:var(--r);border-radius:50%;display:none;border:2px solid var(--surface);}
+
+/* ===== CONTENT ===== */
+.content{padding-bottom:70px;}
+.page{display:none;}.page.on{display:block;}
+
+/* ===== MARQUEE ===== */
+.mq{background:linear-gradient(90deg,var(--p),var(--p2));color:#fff;padding:9px 14px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;}
+
+/* ===== BANNERS ===== */
+.bscroll{display:flex;gap:11px;padding:13px 14px 0;overflow-x:auto;scrollbar-width:none;}
+.bscroll::-webkit-scrollbar{display:none;}
+.bcard{min-width:260px;height:130px;border-radius:var(--r16);flex-shrink:0;cursor:pointer;padding:14px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;}
+.bcard::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.15);}
+.btag{background:rgba(255,255,255,.22);backdrop-filter:blur(6px);border-radius:6px;padding:3px 9px;font-size:10px;font-weight:900;color:#fff;display:inline-block;margin-bottom:5px;border:1px solid rgba(255,255,255,.25);position:relative;z-index:1;}
+.btitle{font-size:18px;font-weight:900;color:#fff;line-height:1.1;position:relative;z-index:1;}
+.bsub{font-size:11px;color:rgba(255,255,255,.8);font-weight:600;margin-top:2px;position:relative;z-index:1;}
+
+/* ===== SECTION ===== */
+.sec{padding:17px 14px 0;}
+.sech{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.sect{font-size:17px;font-weight:900;}
+.secl{font-size:13px;font-weight:800;color:var(--p);cursor:pointer;}
+
+/* ===== CATEGORIES ===== */
+.cats{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.cats::-webkit-scrollbar{display:none;}
+.cati{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;cursor:pointer;}
+.catib{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:25px;transition:.2s;border:2px solid transparent;}
+.cati.on .catib,.cati:hover .catib{border-color:var(--p);box-shadow:0 4px 14px rgba(108,43,217,.2);}
+.catil{font-size:10px;font-weight:900;color:var(--muted);}
+.cati.on .catil{color:var(--p);}
+
+/* ===== FLASH ===== */
+.flash-row{display:flex;align-items:center;gap:9px;}
+.flash-lbl{font-size:17px;font-weight:900;color:var(--r);}
+.cd-wrap{display:flex;gap:3px;align-items:center;}
+.cd{background:var(--r);color:#fff;border-radius:6px;padding:3px 7px;font-size:12px;font-weight:900;min-width:26px;text-align:center;}
+.cd-s{font-weight:900;font-size:13px;color:var(--r);}
+
+/* ===== PRODUCTS ===== */
+.hscroll{display:flex;gap:11px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.hscroll::-webkit-scrollbar{display:none;}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:11px;padding:13px 14px;}
+.pc{background:var(--card);border-radius:var(--r16);overflow:hidden;border:1.5px solid var(--border);transition:.25s;position:relative;display:flex;flex-direction:column;}
+.pc:hover{border-color:var(--p2);box-shadow:var(--sh2);transform:translateY(-2px);}
+.pc.mini{min-width:152px;flex-shrink:0;}
+.pc-img{height:145px;background:var(--s2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.pc-img img{width:100%;height:100%;object-fit:contain;padding:10px;transition:.3s;}
+.pc:hover .pc-img img{transform:scale(1.07);}
+.pbadge{position:absolute;top:7px;left:7px;padding:3px 7px;border-radius:6px;font-size:10px;font-weight:900;}
+.bs{background:var(--r2);color:var(--r);}
+.bn{background:var(--g2);color:var(--g);}
+.bh{background:#fef3c7;color:#d97706;}
+.bo2{background:var(--s2);color:var(--light);}
+.pwish{position:absolute;top:7px;right:7px;width:28px;height:28px;background:var(--surface);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);color:var(--light);transition:.2s;}
+.pwish.on{color:var(--r);border-color:#fecaca;}
+.pc-body{padding:10px 10px;flex:1;display:flex;flex-direction:column;gap:4px;}
+.pc-name{font-size:13px;font-weight:700;line-height:1.3;cursor:pointer;}
+.pc-name:hover{color:var(--p);}
+.pc-stars{display:flex;align-items:center;gap:2px;font-size:11px;}
+.sf{color:var(--o);}.se{color:#d1d5db;}
+.pc-pr{display:flex;align-items:center;gap:5px;margin-top:1px;}
+.pc-price{font-size:16px;font-weight:900;color:var(--p);}
+.pc-mrp{font-size:11px;color:var(--light);text-decoration:line-through;}
+.pc-off{font-size:10px;font-weight:900;color:var(--g);}
+.pc-stk{font-size:10px;color:var(--muted);font-weight:700;}
+.pc-btns{display:flex;gap:7px;margin:0 10px 10px;}
+.add-btn{flex:1;background:var(--p);color:#fff;border:none;border-radius:var(--r8);padding:9px 6px;font-family:'Nunito',sans-serif;font-weight:900;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:.2s;}
+.add-btn:hover{background:var(--p2);}
+.add-btn:disabled{background:var(--border);color:var(--light);cursor:not-allowed;}
+.buy-btn{flex:1;background:var(--g);color:#fff;border:none;border-radius:var(--r8);padding:9px 6px;font-family:'Nunito',sans-serif;font-weight:900;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:.2s;}
+.buy-btn:hover{background:#059669;}
+.admin-ab{display:flex;gap:6px;padding:0 10px 9px;}
+
+/* PROMO */
+.promo{margin:15px 14px;background:linear-gradient(135deg,#1e1b4b,#4c1d95);border-radius:var(--r16);padding:15px 18px;display:flex;align-items:center;justify-content:space-between;overflow:hidden;position:relative;}
+.promo::after{content:'🎁';position:absolute;right:70px;font-size:60px;opacity:.12;}
+.promo h4{font-size:14px;font-weight:900;color:#fff;}
+.promo p{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;}
+.pcta{background:#fff;color:var(--p);border-radius:8px;padding:8px 13px;font-size:12px;font-weight:900;cursor:pointer;border:none;font-family:'Nunito',sans-serif;flex-shrink:0;}
+
+/* RECENTLY VIEWED */
+.rv-empty{font-size:13px;color:var(--muted);padding:8px 0;}
+
+/* ===== CART ===== */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;backdrop-filter:blur(3px);}
+.overlay.open{display:block;}
+.cart-drw{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-radius:22px 22px 0 0;z-index:501;max-height:88vh;display:flex;flex-direction:column;transform:translateY(100%);transition:.35s cubic-bezier(.4,0,.2,1);}
+.cart-drw.open{transform:translateY(0);}
+.dh{width:40px;height:4px;background:var(--border2);border-radius:99px;margin:12px auto 0;}
+.dhr{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.dhr h3{font-size:17px;font-weight:900;}
+.cbody{flex:1;overflow-y:auto;padding:11px 13px;}
+.ci{display:flex;gap:10px;padding:11px;background:var(--s2);border-radius:var(--r12);margin-bottom:8px;align-items:center;border:1px solid var(--border);}
+.ci-img{width:50px;height:50px;object-fit:contain;background:var(--surface);border-radius:9px;padding:4px;border:1px solid var(--border);flex-shrink:0;}
+.ci-info{flex:1;}
+.ci-name{font-size:13px;font-weight:700;margin-bottom:2px;line-height:1.2;}
+.ci-pr{font-size:13px;font-weight:900;color:var(--p);}
+.qrow{display:flex;align-items:center;gap:7px;margin-top:5px;}
+.qb{width:26px;height:26px;background:var(--surface);border:1.5px solid var(--border2);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--p);font-weight:900;transition:.15s;}
+.qb:hover{background:var(--p);color:#fff;border-color:var(--p);}
+.qv{font-size:14px;font-weight:900;min-width:20px;text-align:center;}
+.qrm{margin-left:auto;width:26px;height:26px;background:var(--r2);border:none;border-radius:8px;color:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;}
+.cfoot{padding:11px 14px;border-top:1px solid var(--border);}
+.trow{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;font-weight:600;color:var(--muted);}
+.trow.big{font-size:17px;font-weight:900;color:var(--text);margin-top:7px;padding-top:7px;border-top:1px solid var(--border);}
+.trow.big span:last-child{color:var(--p);}
+.del-prog-wrap{background:var(--g2);border-radius:var(--r8);padding:9px 12px;margin-top:8px;}
+.del-msg{font-size:12px;font-weight:700;color:var(--g);margin-bottom:5px;}
+.del-bar{background:rgba(16,185,129,.2);border-radius:99px;height:5px;overflow:hidden;}
+.del-fill{background:var(--g);height:100%;border-radius:99px;transition:.4s;}
+.co-btn{width:100%;padding:14px;background:linear-gradient(90deg,var(--g),#34d399);color:#fff;border:none;border-radius:var(--r12);font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;box-shadow:0 8px 24px rgba(16,185,129,.25);transition:.2s;}
+.cpn-row{display:flex;gap:8px;margin-bottom:11px;}
+
+/* ===== MODALS ===== */
+.mwrap{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:600;display:none;align-items:flex-end;backdrop-filter:blur(4px);}
+.mwrap.open{display:flex;}
+.msheet{background:var(--surface);border-radius:22px 22px 0 0;padding:20px 17px 32px;width:100%;max-height:92vh;overflow-y:auto;}
+.msheet h3{font-size:18px;font-weight:900;margin-bottom:15px;}
+.mact{display:flex;gap:9px;margin-top:15px;}
+.irow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.sel{background:var(--input);border:1.5px solid var(--border);color:var(--text);padding:12px 13px;border-radius:var(--r12);font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;width:100%;outline:none;cursor:pointer;}
+.sel:focus{border-color:var(--p);}
+
+/* PAYMENT */
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px;}
+.po{background:var(--s2);border:2px solid var(--border);border-radius:var(--r12);padding:11px;cursor:pointer;text-align:center;transition:.2s;}
+.po.sel{border-color:var(--p);background:var(--p3);}
+.po i{font-size:21px;margin-bottom:4px;display:block;}
+.po span{font-size:12px;font-weight:800;}
+
+/* ===== GPS ===== */
+.gps-box{background:var(--p3);border-radius:var(--r16);padding:16px;margin-bottom:13px;border:1px solid var(--border2);}
+.gps-box h4{font-size:14px;font-weight:900;color:var(--p);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.gps-states{display:flex;flex-direction:column;gap:8px;}
+.gps-state{display:none;}
+.gps-state.show{display:block;}
+.gps-btn-big{width:100%;padding:13px;background:var(--p);color:#fff;border:none;border-radius:var(--r12);font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;}
+.gps-btn-big:hover{background:var(--p2);}
+.gps-note{font-size:12px;color:var(--muted);text-align:center;margin-top:7px;}
+.gps-loading{display:flex;align-items:center;gap:10px;padding:12px;background:var(--s2);border-radius:var(--r12);font-size:13px;font-weight:700;}
+.spin{animation:spin 1s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gps-success{background:var(--g2);border-radius:var(--r12);padding:12px;border:1px solid #a7f3d0;}
+.gps-success .gps-loc-name{font-size:13px;font-weight:800;color:var(--g);margin-bottom:4px;}
+.gps-success .gps-coords{font-size:11px;color:#059669;font-family:monospace;}
+.gps-success .gps-acc{font-size:11px;color:#059669;}
+.gps-map-link{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:var(--p);color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:900;text-decoration:none;}
+.gps-error{background:var(--r2);border-radius:var(--r12);padding:12px;border:1px solid #fca5a5;}
+.gps-err-msg{font-size:13px;font-weight:800;color:var(--r);margin-bottom:6px;}
+.gps-err-tip{font-size:12px;color:#dc2626;}
+.gps-retry{background:var(--r);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer;margin-top:8px;}
+.manual-location{margin-top:8px;}
+.manual-location label{font-size:11px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:5px;}
+
+/* ORDER SUMMARY */
+.osumm{background:var(--s2);border-radius:var(--r12);padding:12px;margin-bottom:13px;border:1px solid var(--border);}
+
+/* ===== TRACKER ===== */
+.tracker{background:var(--s2);border-radius:var(--r12);padding:13px;margin-top:9px;border:1px solid var(--border);}
+.trk-t{font-size:13px;font-weight:900;color:var(--p);margin-bottom:11px;display:flex;align-items:center;gap:6px;}
+.tsteps{display:flex;flex-direction:column;}
+.ts{display:flex;gap:10px;position:relative;}
+.ts:not(:last-child)::after{content:'';position:absolute;left:12px;top:28px;width:2px;height:calc(100% - 2px);background:var(--border2);}
+.ts.done::after{background:var(--g);}
+.ts.cur::after{background:linear-gradient(to bottom,var(--p),var(--border2));}
+.ts-ico{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:var(--surface);border:2px solid var(--border2);z-index:1;}
+.ts.done .ts-ico{background:var(--g);border-color:var(--g);color:#fff;}
+.ts.cur .ts-ico{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 0 0 4px rgba(108,43,217,.15);}
+.ts-inf{padding-bottom:12px;}
+.ts-n{font-size:13px;font-weight:700;}
+.ts-d{font-size:11px;color:var(--muted);margin-top:1px;}
+.ts-tag{font-size:10px;font-weight:900;color:var(--p);margin-top:2px;}
+
+/* ===== ORDERS ===== */
+.oc{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r16);margin-bottom:11px;overflow:hidden;}
+.oc-hdr{padding:11px 14px;background:var(--s2);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:6px;}
+.oc-id{font-size:13px;font-weight:900;color:var(--p);}
+.oc-meta{font-size:11px;color:var(--muted);font-weight:600;margin-top:1px;}
+.st{padding:3px 10px;border-radius:var(--r99);font-size:11px;font-weight:900;}
+.st-processing{background:var(--p3);color:var(--p);}
+.st-confirmed{background:#fef3c7;color:#d97706;}
+.st-packed{background:#dbeafe;color:#2563eb;}
+.st-shipped{background:#f3e8ff;color:#7c3aed;}
+.st-out_for_delivery{background:var(--g2);color:#059669;}
+.st-delivered{background:#dcfce7;color:var(--g);}
+.st-cancelled{background:var(--r2);color:var(--r);}
+.oc-body{padding:11px 14px;}
+.oi-row{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--border);}
+.oi-row:last-child{border:none;}
+.oi-th{width:37px;height:37px;object-fit:contain;background:var(--s2);border-radius:8px;padding:3px;}
+
+/* NOTIFICATION DOT */
+.notif-dot{width:8px;height:8px;background:var(--r);border-radius:50%;display:none;position:absolute;top:5px;right:5px;border:2px solid var(--surface);}
+
+/* ===== PROFILE ===== */
+.p-hero{background:linear-gradient(135deg,#3b0764,#6c2bd9);border-radius:var(--r16);padding:17px;display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.p-av{width:56px;height:56px;background:rgba(255,255,255,.18);border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;border:2px solid rgba(255,255,255,.25);flex-shrink:0;}
+.p-nm{font-size:18px;font-weight:900;color:#fff;}
+.p-role{font-size:12px;color:rgba(255,255,255,.6);font-weight:600;margin-top:2px;}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.pst{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r12);padding:12px;text-align:center;}
+.pst-v{font-size:20px;font-weight:900;color:var(--p);}
+.pst-l{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.sc{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r16);padding:14px;margin-bottom:11px;}
+.sc-t{font-size:14px;font-weight:900;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.sr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.sr:last-child{border:none;padding-bottom:0;}
+.sr-ico{width:31px;height:31px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.sr-info{flex:1;}
+.sr-info strong{font-size:13px;font-weight:700;display:block;}
+.sr-info small{font-size:11px;color:var(--muted);}
+
+/* DARK MODE TOGGLE */
+.dm-toggle{width:44px;height:24px;background:var(--border);border-radius:99px;position:relative;cursor:pointer;transition:.3s;flex-shrink:0;}
+.dm-toggle.on{background:var(--p);}
+.dm-knob{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:.3s;box-shadow:0 2px 4px rgba(0,0,0,.2);}
+.dm-toggle.on .dm-knob{left:22px;}
+
+/* ===== ADMIN ===== */
+.asg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px;}
+.as{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r12);padding:13px;}
+.as-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:8px;}
+.as-v{font-size:22px;font-weight:900;}
+.as-l{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;}
+.tabrow{display:flex;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r12);padding:4px;gap:4px;margin-bottom:12px;}
+.tbtn{flex:1;padding:9px;text-align:center;border-radius:10px;font-size:13px;font-weight:900;color:var(--muted);cursor:pointer;transition:.2s;}
+.tbtn.on{background:var(--p);color:#fff;}
+.tw{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r12);overflow:hidden;overflow-x:auto;}
+.dt{width:100%;border-collapse:collapse;font-size:13px;}
+.dt th{text-align:left;padding:9px 11px;background:var(--s2);font-size:10px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.dt td{padding:10px 11px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.dt tr:last-child td{border:none;}
+.tth{width:35px;height:35px;object-fit:contain;background:var(--s2);border-radius:7px;padding:3px;}
+.ab{padding:5px 9px;border-radius:7px;font-size:11px;font-weight:900;cursor:pointer;border:none;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:4px;transition:.15s;text-decoration:none;}
+.ab-p{background:var(--p3);color:var(--p);}
+.ab-r{background:var(--r2);color:var(--r);}
+.ab-g{background:var(--g2);color:var(--g);}
+.ab-b{background:#dbeafe;color:#2563eb;}
+
+/* ===== BUTTONS ===== */
+.btn{padding:11px 15px;border:none;border-radius:var(--r12);font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.2s;}
+.bp{background:var(--p);color:#fff;}.bp:hover{background:var(--p2);}
+.bo{background:transparent;border:1.5px solid var(--border2);color:var(--text);}
+.bo:hover{border-color:var(--p);color:var(--p);}
+.bg{background:var(--g);color:#fff;}
+.br{background:var(--r);color:#fff;}
+.bsm{padding:8px 12px;font-size:13px;}
+.bxs{padding:5px 9px;font-size:11px;border-radius:8px;}
+.bfull{width:100%;}
+.back-btn{display:flex;align-items:center;gap:7px;padding:12px 15px;font-size:15px;font-weight:800;color:var(--p);cursor:pointer;border-bottom:1px solid var(--border);background:var(--surface);}
+.empty{text-align:center;padding:44px 20px;}
+.empty .ei{font-size:50px;margin-bottom:11px;display:block;}
+.empty p{font-size:15px;font-weight:800;}
+.empty small{font-size:13px;color:var(--light);}
+.catbadge{display:inline-block;padding:3px 9px;border-radius:var(--r99);font-size:10px;font-weight:900;text-transform:capitalize;}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:var(--r99);font-size:11px;font-weight:800;}
+
+@media(min-width:600px){.pgrid{grid-template-columns:repeat(auto-fill,minmax(185px,1fr));}.asg{grid-template-columns:repeat(4,1fr);}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-ring r1"></div><div class="sp-ring r2"></div><div class="sp-ring r3"></div>
+  <div class="sp-center">
+    <div class="sp-ico">🛍️</div>
+    <div class="sp-name">QUICKBUY</div>
+    <div class="sp-tag">India Ka Apna Online Store ⚡</div>
+    <div class="sp-bar"><div class="sp-fill"></div></div>
+  </div>
+  <div class="sp-bottom">SHOP FAST · SAVE MORE · DELIVER QUICK</div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- INSTALL MODAL -->
+<div class="install-modal" id="installModal">
+  <div class="install-sheet">
+    <h3>📲 Home Screen Pe Add Karein</h3>
+    <p>QuickBuy ko apne phone pe app ki tarah install karo — bilkul free!</p>
+    <div id="iosGuide" style="display:none">
+      <div class="ios-hint"><i class="fab fa-apple"></i> iPhone/iPad ke liye yeh steps follow karein:</div>
+      <div class="install-steps">
+        <div class="istep"><div class="istep-num">1</div><div class="istep-txt"><strong>Safari mein kholo</strong><small>Yeh page Safari browser mein open hona chahiye</small></div></div>
+        <div class="istep"><div class="istep-num">2</div><div class="istep-txt"><strong>Share button dabao</strong><small>Safari ke neeche wala box-with-arrow (⬆️) icon</small></div></div>
+        <div class="istep"><div class="istep-num">3</div><div class="istep-txt"><strong>"Add to Home Screen" select karo</strong><small>Scroll karke "Add to Home Screen" dhundo</small></div></div>
+        <div class="istep"><div class="istep-num">4</div><div class="istep-txt"><strong>"Add" button dabao</strong><small>Top-right mein "Add" press karo — ho gaya! 🎉</small></div></div>
+      </div>
+    </div>
+    <div id="androidGuide" style="display:none">
+      <div class="install-steps">
+        <div class="istep"><div class="istep-num">1</div><div class="istep-txt"><strong>Chrome mein kholo</strong><small>Yeh page Chrome browser mein open karo</small></div></div>
+        <div class="istep"><div class="istep-num">2</div><div class="istep-txt"><strong>3-dot menu (⋮) dabao</strong><small>Browser ke upar right corner mein</small></div></div>
+        <div class="istep"><div class="istep-num">3</div><div class="istep-txt"><strong>"Add to Home screen" dabao</strong><small>Ya neeche wala install banner press karo</small></div></div>
+      </div>
+      <button class="btn bp bfull" id="androidInstallBtn" onclick="doAndroidInstall()" style="margin-bottom:10px"><i class="fas fa-download"></i> Abhi Install Karein</button>
+    </div>
+    <button class="btn bo bfull" onclick="document.getElementById('installModal').classList.remove('open')">Band Karo</button>
+  </div>
+</div>
+
+<!-- ========= AUTH ========= -->
+<div id="authScreen">
+  <div class="auth-top">
+    <div class="auth-logo">🛍️</div>
+    <h1>QUICKBUY</h1>
+    <p>India Ka Sabse Fast Online Store ⚡</p>
+  </div>
+  <div class="auth-body">
+    <div class="atabs">
+      <div class="atab on" id="tabL" onclick="switchTab('l')">Login</div>
+      <div class="atab" id="tabR" onclick="switchTab('r')">Register</div>
+    </div>
+    <!-- LOGIN -->
+    <div id="loginF">
+      <div class="iw"><label>Username ya Phone Number</label><input class="inp" id="lU" placeholder="username ya 10-digit phone" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="iw"><label>Password</label><div class="iwr"><input type="password" class="inp pr" id="lP" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"><i class="fas fa-eye" onclick="tpwd('lP',this)"></i></div></div>
+      <button class="cta" onclick="doLogin()"><i class="fas fa-bolt"></i> Login Karein</button>
+    </div>
+    <!-- REGISTER -->
+    <div id="regF" style="display:none">
+      <div class="iw"><label>Poora Naam *</label><input class="inp" id="rN" placeholder="Apna poora naam"></div>
+      <div class="frow">
+        <div class="iw"><label>Username *</label><input class="inp" id="rU" placeholder="unique username"></div>
+        <div class="iw"><label>Phone * 📱</label><input class="inp" id="rPh" placeholder="9819879709" type="tel" maxlength="10"></div>
+      </div>
+      <div class="iw"><label>Email</label><input class="inp" id="rE" placeholder="email@example.com" type="email"></div>
+      <div class="iw"><label>Password *</label><div class="iwr"><input type="password" class="inp pr" id="rP" placeholder="min 4 characters"><i class="fas fa-eye" onclick="tpwd('rP',this)"></i></div></div>
+      <div class="iw"><label>Address (optional)</label><input class="inp" id="rAddr" placeholder="Ghar ka address"></div>
+      <button class="cta" onclick="doRegister()"><i class="fas fa-user-plus"></i> Account Banayein</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========= MAIN APP ========= -->
+<div id="app">
+  <header class="hdr">
+    <div class="logo">QB</div>
+    <div class="sw"><i class="fas fa-search"></i><input type="text" class="si" id="srchInp" placeholder="Products search karein..." oninput="handleSearch(this.value)"></div>
+    <button class="hb" onclick="showCart()"><i class="fas fa-shopping-cart"></i><span class="hbdot" id="cBadge">0</span></button>
+    <button class="hb" onclick="goto('wishlist')"><i class="fas fa-heart"></i><span class="hbdot" id="wBadge">0</span></button>
+    <button class="hb" id="installHdrBtn" onclick="showInstall()" title="Install App"><i class="fas fa-download"></i></button>
+  </header>
+
+  <div class="content">
+    <!-- HOME -->
+    <div class="page on" id="pg-home">
+      <div class="mq"><i class="fas fa-bolt"></i><marquee scrollamount="3">🔥 Flash Deals LIVE! &nbsp;&nbsp; 🚚 ₹100 se upar FREE Delivery! &nbsp;&nbsp; 🎁 SAVE20 code pe 20% OFF &nbsp;&nbsp; ⚡ Roz naye products add hote hain!</marquee></div>
+      <div class="bscroll" id="bscroll"></div>
+      <div class="sec">
+        <div class="sech"><div class="sect">Categories</div></div>
+        <div class="cats" id="catsList">
+          <div class="cati on" data-c="all" onclick="filterCat('all',this)"><div class="catib" style="background:#ede9fe">🏪</div><div class="catil">Sab</div></div>
+          <div class="cati" data-c="electronics" onclick="filterCat('electronics',this)"><div class="catib" style="background:#dbeafe">⚡</div><div class="catil">Electronics</div></div>
+          <div class="cati" data-c="clothing" onclick="filterCat('clothing',this)"><div class="catib" style="background:#f3e8ff">👕</div><div class="catil">Clothing</div></div>
+          <div class="cati" data-c="kitchen" onclick="filterCat('kitchen',this)"><div class="catib" style="background:#d1fae5">🍳</div><div class="catil">Kitchen</div></div>
+          <div class="cati" data-c="sports" onclick="filterCat('sports',this)"><div class="catib" style="background:#fee2e2">⚽</div><div class="catil">Sports</div></div>
+          <div class="cati" data-c="beauty" onclick="filterCat('beauty',this)"><div class="catib" style="background:#fce7f3">💄</div><div class="catil">Beauty</div></div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sech">
+          <div class="flash-row"><div class="flash-lbl">⚡ Flash Deals</div><div class="cd-wrap"><div class="cd" id="cdH">01</div><div class="cd-s">:</div><div class="cd" id="cdM">59</div><div class="cd-s">:</div><div class="cd" id="cdS">59</div></div></div>
+          <div class="secl" onclick="filterCat('all',document.querySelector('[data-c=all]'))">Sab →</div>
+        </div>
+        <div class="hscroll" id="flashRow"></div>
+      </div>
+      <div class="promo"><div><h4>🎁 First Order pe 50% OFF!</h4><p>Code FIRST50 use karo checkout pe</p></div><button class="pcta" onclick="showCart()">Shop!</button></div>
+      <!-- Recently Viewed -->
+      <div class="sec" id="rvSection" style="display:none">
+        <div class="sech"><div class="sect">🕐 Recently Viewed</div></div>
+        <div class="hscroll" id="rvRow"></div>
+      </div>
+      <div class="sec">
+        <div class="sech">
+          <div class="sect" id="secTitle">🛍️ Saare Products</div>
+          <select class="sel" style="padding:6px 9px;font-size:12px;border-radius:8px;width:auto;min-width:0" onchange="setSort(this.value)">
+            <option value="def">Sort</option><option value="pl">₹ Low</option><option value="ph">₹ High</option><option value="rat">Rating</option><option value="new">New</option>
+          </select>
+        </div>
+      </div>
+      <div class="pgrid" id="prodGrid"></div>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="page" id="pg-detail">
+      <div class="back-btn" onclick="goto('home')"><i class="fas fa-arrow-left"></i> Wapas</div>
+      <div id="detailContent" style="padding:13px 14px 20px"></div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="page" id="pg-search">
+      <div class="back-btn" onclick="goto('home')"><i class="fas fa-arrow-left"></i> Wapas</div>
+      <div id="srchHdr" style="padding:11px 14px;font-size:16px;font-weight:900"></div>
+      <div class="pgrid" id="srchGrid"></div>
+    </div>
+
+    <!-- WISHLIST -->
+    <div class="page" id="pg-wishlist">
+      <div class="back-btn" onclick="goto('home')"><i class="fas fa-arrow-left"></i> Wapas</div>
+      <div style="padding:13px 14px"><div style="font-size:18px;font-weight:900;margin-bottom:12px">❤️ Meri Wishlist</div><div class="pgrid" id="wishGrid"></div></div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="page" id="pg-orders">
+      <div class="back-btn" onclick="goto('home')"><i class="fas fa-arrow-left"></i> Wapas</div>
+      <div style="padding:13px 14px"><div style="font-size:18px;font-weight:900;margin-bottom:12px">📦 Meri Orders</div><div id="ordersC"></div></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="page" id="pg-profile">
+      <div style="padding:13px 14px" id="profileC"></div>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="page" id="pg-admin">
+      <div class="back-btn" onclick="goto('home')"><i class="fas fa-arrow-left"></i> Wapas</div>
+      <div style="padding:13px 14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="font-size:18px;font-weight:900">⚙️ Admin Panel</div>
+          <button class="btn bp bsm" onclick="openAddProd()"><i class="fas fa-plus"></i> Add Product</button>
+        </div>
+        <div class="asg" id="adminStats"></div>
+        <div class="tabrow">
+          <div class="tbtn on" onclick="aTab('products',this)">Products</div>
+          <div class="tbtn" onclick="aTab('users',this)">Users</div>
+          <div class="tbtn" onclick="aTab('orders',this)">Orders</div>
+        </div>
+        <div id="adminContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bnav">
+    <div class="bi on" id="bi-home" onclick="goto('home')"><i class="fas fa-home"></i><span>Home</span></div>
+    <div class="bi" id="bi-orders" onclick="goto('orders')"><i class="fas fa-box"></i><span>Orders</span><div class="bdot" id="ordDot"></div></div>
+    <div class="bi" id="bi-wishlist" onclick="goto('wishlist')"><i class="fas fa-heart"></i><span>Wishlist</span></div>
+    <div class="bi" id="bi-profile" onclick="goto('profile')"><i class="fas fa-user"></i><span>Profile</span></div>
+    <div class="bi" id="bi-admin" style="display:none" onclick="goto('admin')"><i class="fas fa-cog"></i><span>Admin</span></div>
+  </nav>
+</div>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="cOvr" onclick="hideCart()"></div>
+<div class="cart-drw" id="cDrw">
+  <div class="dh"></div>
+  <div class="dhr"><h3>🛒 Mera Cart</h3><div class="btn bo bxs" onclick="hideCart()"><i class="fas fa-times"></i></div></div>
+  <div class="cbody" id="cBody"></div>
+  <div class="cfoot" id="cFoot"></div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="mwrap" id="coWrap">
+  <div class="msheet">
+    <h3>🛍️ Order Confirm Karein</h3>
+
+    <!-- GPS BOX -->
+    <div class="gps-box">
+      <h4><i class="fas fa-map-marker-alt"></i> Delivery Location</h4>
+      <div class="gps-states">
+        <!-- State 0: idle -->
+        <div class="gps-state show" id="gpsIdle">
+          <button class="gps-btn-big" onclick="startGPS()"><i class="fas fa-crosshairs"></i> 📍 GPS se Live Location Detect Karein</button>
+          <div class="gps-note">📌 Allow location access when browser asks</div>
+        </div>
+        <!-- State 1: loading -->
+        <div class="gps-state" id="gpsLoad">
+          <div class="gps-loading"><span class="spin">⏳</span> Location le raha hai... <small style="color:var(--muted)">(10-15 sec)</small></div>
+        </div>
+        <!-- State 2: success -->
+        <div class="gps-state" id="gpsDone">
+          <div class="gps-success">
+            <div class="gps-loc-name" id="gpsLocName">📍 Location captured</div>
+            <div class="gps-coords" id="gpsCoordsText"></div>
+            <div class="gps-acc" id="gpsAccText"></div>
+            <a id="gpsMapLink" href="#" target="_blank" class="gps-map-link"><i class="fas fa-map"></i> Google Maps Pe Dekhein</a>
+            <button class="gps-retry" style="margin-left:8px;background:var(--p)" onclick="resetGPS()">Reset</button>
+          </div>
+        </div>
+        <!-- State 3: error -->
+        <div class="gps-state" id="gpsErr">
+          <div class="gps-error">
+            <div class="gps-err-msg" id="gpsErrMsg">Location nahi mili</div>
+            <div class="gps-err-tip" id="gpsErrTip"></div>
+            <button class="gps-retry" onclick="startGPS()"><i class="fas fa-redo"></i> Dubara Try Karein</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADDRESS -->
+    <div class="iw"><label>Delivery Address *</label><textarea class="inp" id="delivAddr" rows="2" placeholder="Ghar/office ka pura address likhein..."></textarea></div>
+    <!-- PAYMENT -->
+    <div class="iw" style="margin-bottom:8px"><label>Payment Method</label></div>
+    <div class="pay-grid" id="payGrid">
+      <div class="po sel" data-p="cod" onclick="selPay(this)"><i class="fas fa-money-bill-wave" style="color:var(--g)"></i><span>Cash on Delivery</span></div>
+      <div class="po" data-p="easypaisa" onclick="selPay(this)"><i class="fas fa-mobile-alt" style="color:#059669"></i><span>Easypaisa</span></div>
+      <div class="po" data-p="jazzcash" onclick="selPay(this)"><i class="fas fa-mobile-alt" style="color:#dc2626"></i><span>JazzCash</span></div>
+      <div class="po" data-p="card" onclick="selPay(this)"><i class="fas fa-credit-card" style="color:#2563eb"></i><span>Card</span></div>
+    </div>
+    <!-- COUPON -->
+    <div class="cpn-row"><input class="inp" id="cpnInp" placeholder="Coupon code (e.g. SAVE20)" style="border-radius:var(--r8)"><button class="btn bp bsm" onclick="applyCoupon()">Apply</button></div>
+    <div class="osumm" id="orderSumm"></div>
+    <div class="mact">
+      <button class="btn bo" onclick="document.getElementById('coWrap').classList.remove('open')">Cancel</button>
+      <button class="btn bg bfull" onclick="placeOrder()"><i class="fas fa-bolt"></i> Order Karein!</button>
+    </div>
+  </div>
+</div>
+
+<!-- BUY NOW MODAL (Quick Checkout) -->
+<div class="mwrap" id="bnWrap">
+  <div class="msheet">
+    <h3>⚡ Buy Now — Quick Order</h3>
+    <input type="hidden" id="bnPid">
+    <div id="bnProdInfo" style="display:flex;align-items:center;gap:12px;background:var(--s2);border-radius:var(--r12);padding:12px;margin-bottom:14px;border:1px solid var(--border)"></div>
+    <div class="iw"><label>Phone Number *</label><input class="inp" id="bnPhone" placeholder="9819879709" type="tel"></div>
+    <div class="iw"><label>Delivery Address *</label><textarea class="inp" id="bnAddr" rows="2" placeholder="Pura address likhein..."></textarea></div>
+    <div class="iw"><label>Payment</label>
+      <select class="sel" id="bnPay"><option value="cod">💵 Cash on Delivery</option><option value="easypaisa">📱 Easypaisa</option><option value="jazzcash">📱 JazzCash</option></select>
+    </div>
+    <div class="mact">
+      <button class="btn bo" onclick="document.getElementById('bnWrap').classList.remove('open')">Cancel</button>
+      <button class="btn bg bfull" onclick="doBuyNow()"><i class="fas fa-bolt"></i> Abhi Order Karein!</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="mwrap" id="pmWrap">
+  <div class="msheet">
+    <h3 id="pmTitle">Product Add Karein</h3>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="iw"><label>Name *</label><input class="inp" id="pmN" placeholder="Product naam"></div>
+      <div class="irow">
+        <div class="iw"><label>Price ₹ *</label><input type="number" class="inp" id="pmP" min="1" placeholder="0"></div>
+        <div class="iw"><label>Stock *</label><input type="number" class="inp" id="pmS" min="0" placeholder="0"></div>
+      </div>
+      <div class="irow">
+        <div class="iw"><label>Category</label><select class="sel" id="pmCat"><option value="electronics">Electronics</option><option value="clothing">Clothing</option><option value="kitchen">Kitchen</option><option value="sports">Sports</option><option value="beauty">Beauty</option></select></div>
+        <div class="iw"><label>Discount %</label><input type="number" class="inp" id="pmD" min="0" max="90" placeholder="0"></div>
+      </div>
+      <div class="iw"><label>Description</label><textarea class="inp" id="pmDesc" rows="2" placeholder="Product details..."></textarea></div>
+      <div class="iw"><label>Image (max 2MB)</label><input type="file" class="inp" id="pmImg" accept="image/*" onchange="prevImg(this)"><img id="pmPrev" style="max-width:90px;max-height:70px;margin-top:6px;display:none;border-radius:10px;object-fit:contain;border:1px solid var(--border)"></div>
+      <input type="hidden" id="pmImgD"><input type="hidden" id="pmEid">
+    </div>
+    <div class="mact"><button class="btn bo" onclick="closePM()">Cancel</button><button class="btn bp bfull" onclick="saveProd()"><i class="fas fa-save"></i> Save</button></div>
+  </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div class="mwrap" id="revWrap">
+  <div class="msheet">
+    <h3>⭐ Review Likhein</h3>
+    <input type="hidden" id="revPid">
+    <div class="iw"><label>Rating</label><div id="revStars" style="display:flex;gap:7px;margin-top:4px"><span style="font-size:32px;cursor:pointer;color:#e5e7eb;transition:.15s" data-v="1" onclick="setRat(1)">★</span><span style="font-size:32px;cursor:pointer;color:#e5e7eb;transition:.15s" data-v="2" onclick="setRat(2)">★</span><span style="font-size:32px;cursor:pointer;color:#e5e7eb;transition:.15s" data-v="3" onclick="setRat(3)">★</span><span style="font-size:32px;cursor:pointer;color:#e5e7eb;transition:.15s" data-v="4" onclick="setRat(4)">★</span><span style="font-size:32px;cursor:pointer;color:#e5e7eb;transition:.15s" data-v="5" onclick="setRat(5)">★</span></div></div>
+    <div class="iw" style="margin-top:11px"><label>Comment</label><textarea class="inp" id="revTxt" rows="3" placeholder="Apna experience share karein..."></textarea></div>
+    <div class="mact"><button class="btn bo" onclick="document.getElementById('revWrap').classList.remove('open')">Cancel</button><button class="btn bp bfull" onclick="submitRev()"><i class="fas fa-paper-plane"></i> Submit</button></div>
+  </div>
+</div>
+
+<!-- STATUS MODAL -->
+<div class="mwrap" id="stWrap">
+  <div class="msheet">
+    <h3>📦 Order Status Update</h3>
+    <input type="hidden" id="stOid"><input type="hidden" id="stUid">
+    <div class="iw" style="margin-bottom:16px"><label>Naya Status</label>
+      <select class="sel" id="stSel"><option value="processing">⏳ Processing</option><option value="confirmed">✅ Confirmed</option><option value="packed">📦 Packed</option><option value="shipped">🚚 Shipped</option><option value="out_for_delivery">🛵 Out for Delivery</option><option value="delivered">🎉 Delivered</option><option value="cancelled">❌ Cancelled</option></select>
+    </div>
+    <div class="mact"><button class="btn bo" onclick="document.getElementById('stWrap').classList.remove('open')">Cancel</button><button class="btn bp bfull" onclick="doUpdateSt()"><i class="fas fa-check"></i> Update</button></div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// CONFIG
+// ================================================================
+const WA = '919819879709';
+const FREE_MIN = 100;
+const COUPONS = {FIRST50:{pct:50,lbl:'50% OFF'},SAVE20:{pct:20,lbl:'20% OFF'},QB10:{pct:10,lbl:'10% OFF'}};
+const CAT_BG = {electronics:'#dbeafe',clothing:'#f3e8ff',kitchen:'#d1fae5',sports:'#fee2e2',beauty:'#fce7f3'};
+const STEPS = [
+  {k:'processing',e:'⏳',n:'Order Received',d:'Order receive ho gaya'},
+  {k:'confirmed',e:'✅',n:'Confirmed',d:'Order confirm ho gaya'},
+  {k:'packed',e:'📦',n:'Packing',d:'Packing ho rahi hai'},
+  {k:'shipped',e:'🚚',n:'Shipped',d:'Courier ko de diya gaya'},
+  {k:'out_for_delivery',e:'🛵',n:'Out for Delivery',d:'Delivery boy aa raha hai!'},
+  {k:'delivered',e:'🎉',n:'Delivered',d:'Order mil gaya! 🎉'},
+];
+const SORD = ['processing','confirmed','packed','shipped','out_for_delivery','delivered','cancelled'];
+
+// ================================================================
+// STORAGE
+// ================================================================
+const gl = (k,d) => { try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;} };
+const sl = (k,v) => { try{localStorage.setItem(k,JSON.stringify(v));}catch{} };
+
+// ================================================================
+// STATE
+// ================================================================
+let S = {
+  user:null, products:[], users:{}, orders:{}, reviews:{},
+  wishlist:[], cart:[], cat:'all', sort:'def', search:'',
+  rV:0, lat:null, lng:null, locName:'', payMethod:'cod', coupon:null,
+  recentlyViewed:[], darkMode:false
+};
+
+// ================================================================
+// INIT
+// ================================================================
+function initData(){
+  S.users = gl('qb_u', {
+    admin:{username:'admin',password:'admin123',name:'Admin Sahab',email:'admin@qb.com',phone:'9819879709',address:'',role:'admin',joined:'2024-01-01'},
+    ali:{username:'ali',password:'ali123',name:'Ali Hassan',email:'ali@e.com',phone:'9801234567',address:'',role:'user',joined:'2024-03-15'},
+    sara:{username:'sara',password:'sara123',name:'Sara Khan',email:'sara@e.com',phone:'9807654321',address:'',role:'user',joined:'2024-05-20'},
+  });
+  S.products = gl('qb_p', [
+    {id:1,name:'Samsung Galaxy Buds Pro',price:4999,stock:15,category:'electronics',description:'Premium wireless earbuds with Active Noise Cancellation. 28hr battery.',discount:10,image:'',rating:4.5,rc:23,badge:'sale',createdAt:'2024-01-10'},
+    {id:2,name:'Classic Polo T-Shirt',price:799,stock:50,category:'clothing',description:'100% Cotton polo shirt. Comfortable daily wear.',discount:0,image:'',rating:4.2,rc:41,badge:'new',createdAt:'2024-01-15'},
+    {id:3,name:'Amazfit GTR 4 Smartwatch',price:8499,stock:8,category:'electronics',description:'GPS smartwatch. 14-day battery.',discount:15,image:'',rating:4.7,rc:18,badge:'hot',createdAt:'2024-02-01'},
+    {id:4,name:'Steel Insulated Bottle',price:599,stock:80,category:'kitchen',description:'1-liter vacuum. Hot 12h, Cold 24h.',discount:0,image:'',rating:4.0,rc:62,badge:'new',createdAt:'2024-02-10'},
+    {id:5,name:'Nike Running Shoes',price:6999,stock:20,category:'sports',description:'Lightweight breathable running shoes.',discount:5,image:'',rating:4.8,rc:35,badge:'hot',createdAt:'2024-02-20'},
+    {id:6,name:'Laptop Backpack 30L',price:2499,stock:30,category:'sports',description:'Waterproof, USB port, 15.6" laptops.',discount:0,image:'',rating:4.3,rc:29,badge:'new',createdAt:'2024-03-01'},
+    {id:7,name:'Vitamin C Face Serum',price:1299,stock:45,category:'beauty',description:'Brightening serum with SPF.',discount:20,image:'',rating:4.6,rc:88,badge:'sale',createdAt:'2024-03-10'},
+    {id:8,name:'Air Fryer 4L',price:5499,stock:12,category:'kitchen',description:'8 preset modes. 80% less oil.',discount:0,image:'',rating:4.4,rc:31,badge:'hot',createdAt:'2024-03-20'},
+    {id:9,name:'Bluetooth Speaker',price:1899,stock:25,category:'electronics',description:'Portable waterproof. 20W, 10hr.',discount:8,image:'',rating:4.1,rc:47,badge:'sale',createdAt:'2024-04-01'},
+    {id:10,name:'Yoga Mat 6mm',price:999,stock:35,category:'sports',description:'Non-slip. 183x61cm.',discount:0,image:'',rating:4.5,rc:22,badge:'new',createdAt:'2024-04-10'},
+  ]);
+  S.orders = gl('qb_o', {});
+  S.reviews = gl('qb_r', {});
+  S.darkMode = gl('qb_dark', false);
+  if(S.darkMode) document.documentElement.setAttribute('data-theme','dark');
+}
+
+function saveAll(){ sl('qb_u',S.users); sl('qb_p',S.products); sl('qb_o',S.orders); sl('qb_r',S.reviews); }
+function saveCW(){ if(S.user){ sl('qb_c_'+S.user.username,S.cart); sl('qb_w_'+S.user.username,S.wishlist); sl('qb_rv_'+S.user.username,S.recentlyViewed); } }
+
+// ================================================================
+// HELPERS
+// ================================================================
+function ep(p){ return p.discount?Math.round(p.price*(1-p.discount/100)):p.price; }
+function pimg(p){
+  if(p.image) return p.image;
+  const em={electronics:'💻',clothing:'👕',kitchen:'🍳',sports:'⚽',beauty:'💄'}[p.category]||'📦';
+  const bg=(CAT_BG[p.category]||'#ede9fe').replace('#','');
+  return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='180'%3E%3Crect width='200' height='180' fill='%23${bg}'/%3E%3Ctext x='100' y='95' font-size='70' text-anchor='middle' dominant-baseline='middle'%3E${encodeURIComponent(em)}%3C/text%3E%3C/svg%3E`;
+}
+function sH(r){ let h=''; for(let i=1;i<=5;i++) h+=`<span class="${i<=Math.round(r)?'sf':'se'}">★</span>`; return h; }
+function slbl(s){ return {processing:'Processing',confirmed:'Confirmed',packed:'Packed',shipped:'Shipped',out_for_delivery:'Out for Delivery',delivered:'Delivered',cancelled:'Cancelled'}[s]||s; }
+function canCancel(s){ return ['processing','confirmed'].includes(s); }
+
+// ================================================================
+// TOAST
+// ================================================================
+let tC=0;
+function toast(msg, type='i'){
+  const wrap=document.getElementById('toastWrap');
+  const t=document.createElement('div');
+  t.className=`toast t${type}`;
+  const ic=type==='e'?'times-circle':type==='s'?'check-circle':'info-circle';
+  t.innerHTML=`<i class="fas fa-${ic}"></i>${msg}`;
+  wrap.appendChild(t);
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>t.classList.add('show')); });
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),400); }, 3000);
+}
+
+// ================================================================
+// DARK MODE
+// ================================================================
+function toggleDark(){
+  S.darkMode=!S.darkMode; sl('qb_dark',S.darkMode);
+  document.documentElement.setAttribute('data-theme',S.darkMode?'dark':'light');
+  document.getElementById('themeColorMeta').content=S.darkMode?'#1a1828':'#6c2bd9';
+  const tog=document.getElementById('dmToggle'); if(tog) tog.className=`dm-toggle${S.darkMode?' on':''}`;
+}
+
+// ================================================================
+// PWA / INSTALL
+// ================================================================
+let deferredPrompt=null, isIOS=false;
+function detectPWA(){
+  isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  const isInstalled=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;
+  if(!isInstalled) setTimeout(()=>showInstall(), 8000);
+}
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; });
+function showInstall(){
+  const modal=document.getElementById('installModal');
+  if(isIOS){ document.getElementById('iosGuide').style.display='block'; document.getElementById('androidGuide').style.display='none'; }
+  else { document.getElementById('iosGuide').style.display='none'; document.getElementById('androidGuide').style.display='block'; }
+  modal.classList.add('open');
+}
+function doAndroidInstall(){
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(r=>{ if(r.outcome==='accepted'){ toast('App install ho gaya! 🎉','s'); document.getElementById('installModal').classList.remove('open'); } deferredPrompt=null; }); }
+  else { toast('Browser install button dhundo ya manually add karo','i'); }
+}
+
+// ================================================================
+// AUTH
+// ================================================================
+function tpwd(id,ico){ const e=document.getElementById(id); const s=e.type==='password'; e.type=s?'text':'password'; ico.className=s?'fas fa-eye-slash':'fas fa-eye'; }
+function switchTab(t){
+  document.getElementById('tabL').classList.toggle('on',t==='l');
+  document.getElementById('tabR').classList.toggle('on',t==='r');
+  document.getElementById('loginF').style.display=t==='l'?'block':'none';
+  document.getElementById('regF').style.display=t==='r'?'block':'none';
+}
+function doLogin(){
+  let raw=document.getElementById('lU').value.trim(), pass=document.getElementById('lP').value;
+  if(!raw||!pass){ toast('Username/Phone aur Password dono likhein!','e'); return; }
+  let user=S.users[raw.toLowerCase()] || Object.values(S.users).find(u=>u.phone===raw.replace(/\D/g,''));
+  if(!user||user.password!==pass){ toast('Wrong credentials!','e'); return; }
+  loginUser(user);
+}
+function doRegister(){
+  const name=document.getElementById('rN').value.trim(),
+        uname=document.getElementById('rU').value.trim().toLowerCase(),
+        phone=document.getElementById('rPh').value.replace(/\D/g,''),
+        email=document.getElementById('rE').value.trim(),
+        pass=document.getElementById('rP').value,
+        addr=document.getElementById('rAddr').value.trim();
+  if(!name){ toast('Naam likhein!','e'); return; }
+  if(!uname||uname.length<3){ toast('Min 3 char username!','e'); return; }
+  if(!phone||phone.length!==10){ toast('10-digit phone number zaroori hai!','e'); return; }
+  if(!pass||pass.length<4){ toast('Password min 4 characters!','e'); return; }
+  if(S.users[uname]){ toast('Username pehle se hai!','e'); return; }
+  if(Object.values(S.users).find(u=>u.phone===phone)){ toast('Phone number pehle se registered hai!','e'); return; }
+  S.users[uname]={username:uname,password:pass,name,email,phone,address:addr,role:'user',joined:new Date().toISOString().split('T')[0]};
+  saveAll(); toast('Account ban gaya! Login karein 🎉','s'); switchTab('l'); document.getElementById('lU').value=uname;
+}
+function loginUser(u){
+  S.user=u; S.cart=gl('qb_c_'+u.username,[]); S.wishlist=gl('qb_w_'+u.username,[]); S.recentlyViewed=gl('qb_rv_'+u.username,[]);
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('bi-admin').style.display=u.role==='admin'?'flex':'none';
+  sessionStorage.setItem('qb_s',u.username);
+  goto('home'); updateBadges();
+  toast(`Welcome ${u.name}! 🎉`,'s');
+}
+function doLogout(){ saveCW(); sessionStorage.removeItem('qb_s'); S.user=null; S.cart=[]; S.wishlist=[]; S.recentlyViewed=[]; document.getElementById('app').style.display='none'; document.getElementById('authScreen').style.display='block'; }
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+function goto(pg){
+  if(pg==='admin'&&S.user?.role!=='admin'){ toast('Access Denied!','e'); return; }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pg-'+pg)?.classList.add('on');
+  document.querySelectorAll('.bi').forEach(b=>b.classList.remove('on'));
+  const bm={home:'bi-home',orders:'bi-orders',wishlist:'bi-wishlist',profile:'bi-profile',admin:'bi-admin'};
+  if(bm[pg]) document.getElementById(bm[pg])?.classList.add('on');
+  if(pg==='home') renderHome();
+  if(pg==='wishlist') renderWishlist();
+  if(pg==='orders') renderOrders();
+  if(pg==='profile') renderProfile();
+  if(pg==='admin'&&S.user?.role==='admin') renderAdmin();
+  window.scrollTo(0,0);
+}
+
+// ================================================================
+// BANNERS
+// ================================================================
+function renderBanners(){
+  const b=[
+    {g:'linear-gradient(135deg,#f59e0b,#ef4444)',tag:'⚡ FLASH SALE',t:'Electronics<br>Mega Deal!',s:'Up to 70% off'},
+    {g:'linear-gradient(135deg,#10b981,#0ea5e9)',tag:'🍳 KITCHEN',t:'Home &<br>Kitchen',s:'Starting ₹299'},
+    {g:'linear-gradient(135deg,#ec4899,#8b5cf6)',tag:'💄 BEAUTY',t:'Skincare &<br>Beauty',s:'Top brands'},
+    {g:'linear-gradient(135deg,#6c2bd9,#2563eb)',tag:'👕 FASHION',t:'Clothing<br>Collection',s:'Latest fashion'},
+  ];
+  document.getElementById('bscroll').innerHTML=b.map(x=>`<div class="bcard" style="background:${x.g}" onclick="filterCat('all',document.querySelector('[data-c=all]'))"><div class="btag">${x.tag}</div><div class="btitle">${x.t}</div><div class="bsub">${x.s}</div></div>`).join('');
+}
+
+// ================================================================
+// SHOP
+// ================================================================
+function getProds(){
+  let p=[...S.products];
+  if(S.cat!=='all') p=p.filter(x=>x.category===S.cat);
+  if(S.search){ const q=S.search.toLowerCase(); p=p.filter(x=>x.name.toLowerCase().includes(q)||(x.description||'').toLowerCase().includes(q)); }
+  if(S.sort==='pl') p.sort((a,b)=>ep(a)-ep(b));
+  else if(S.sort==='ph') p.sort((a,b)=>ep(b)-ep(a));
+  else if(S.sort==='rat') p.sort((a,b)=>b.rating-a.rating);
+  else if(S.sort==='new') p.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  return p;
+}
+function renderHome(){
+  renderBanners();
+  // Flash
+  const fd=S.products.filter(p=>p.discount>0).slice(0,6);
+  document.getElementById('flashRow').innerHTML=fd.map(p=>pcH(p,true)).join('');
+  // Recently Viewed
+  const rvProds=S.recentlyViewed.map(id=>S.products.find(p=>p.id===id)).filter(Boolean).slice(0,5);
+  if(rvProds.length){ document.getElementById('rvSection').style.display='block'; document.getElementById('rvRow').innerHTML=rvProds.map(p=>pcH(p,true)).join(''); }
+  else document.getElementById('rvSection').style.display='none';
+  // Main
+  const ps=getProds(), g=document.getElementById('prodGrid');
+  if(!ps.length){ g.innerHTML=`<div class="empty" style="grid-column:1/-1"><span class="ei">🔍</span><p>Koi product nahi mila</p></div>`; return; }
+  g.innerHTML=ps.map(p=>pcH(p,false)).join('');
+}
+function pcH(p,mini){
+  const epr=ep(p), inW=S.wishlist.includes(p.id), isA=S.user?.role==='admin';
+  const bH=p.stock<1?'<div class="pbadge bo2">Out</div>':p.badge==='sale'?`<div class="pbadge bs">${p.discount}% OFF</div>`:p.badge==='hot'?'<div class="pbadge bh">🔥 HOT</div>':p.badge==='new'?'<div class="pbadge bn">NEW</div>':'';
+  return `<div class="pc ${mini?'mini':''}">
+    <div class="pc-img">${bH}<img src="${pimg(p)}" alt="${p.name}" loading="lazy"><div class="pwish ${inW?'on':''}" onclick="toggleWish(${p.id},event)"><i class="fas fa-heart"></i></div></div>
+    <div class="pc-body">
+      <div class="pc-name" onclick="openDetail(${p.id})">${p.name}</div>
+      <div class="pc-stars">${sH(p.rating)}<span style="color:var(--muted);font-size:10px;margin-left:2px">(${p.rc})</span></div>
+      <div class="pc-pr"><div class="pc-price">₹${epr}</div>${p.discount?`<div class="pc-mrp">₹${p.price}</div><div class="pc-off">-${p.discount}%</div>`:''}</div>
+      <div class="pc-stk" style="color:${p.stock>0?'var(--muted)':'var(--r)'}">${p.stock>0?p.stock+' in stock':'Out of Stock'}</div>
+    </div>
+    <div class="pc-btns">
+      <button class="add-btn" onclick="addCart(${p.id})" ${p.stock<1?'disabled':''}><i class="fas fa-cart-plus"></i> Cart</button>
+      <button class="buy-btn" onclick="openBuyNow(${p.id})" ${p.stock<1?'disabled':''}><i class="fas fa-bolt"></i> Buy</button>
+    </div>
+    ${isA?`<div class="admin-ab"><button class="ab ab-p" onclick="openEditProd(${p.id})"><i class="fas fa-pen"></i></button><button class="ab ab-r" onclick="delProd(${p.id})"><i class="fas fa-trash"></i></button></div>`:''}
+  </div>`;
+}
+function filterCat(c,el){ S.cat=c; document.querySelectorAll('.cati').forEach(i=>i.classList.remove('on')); el?.classList.add('on'); const t={all:'🛍️ Saare Products',electronics:'⚡ Electronics',clothing:'👕 Clothing',kitchen:'🍳 Kitchen',sports:'⚽ Sports',beauty:'💄 Beauty'}; document.getElementById('secTitle').textContent=t[c]||'Products'; renderHome(); goto('home'); }
+function setSort(v){ S.sort=v; renderHome(); }
+function handleSearch(q){ S.search=q; if(!q){if(document.getElementById('pg-search').classList.contains('on'))goto('home');return;} const ps=getProds(); document.getElementById('srchHdr').textContent=`"${q}" — ${ps.length} results`; document.getElementById('srchGrid').innerHTML=ps.length?ps.map(p=>pcH(p,false)).join(''):`<div class="empty" style="grid-column:1/-1"><span class="ei">🔍</span><p>Koi nahi mila</p></div>`; goto('search'); }
+
+// ================================================================
+// DETAIL
+// ================================================================
+function openDetail(id){
+  const p=S.products.find(x=>x.id===id); if(!p) return;
+  // Track recently viewed
+  S.recentlyViewed=S.recentlyViewed.filter(x=>x!==id); S.recentlyViewed.unshift(id); if(S.recentlyViewed.length>8) S.recentlyViewed.pop(); saveCW();
+  const epr=ep(p), revs=S.reviews[id]||[], isA=S.user?.role==='admin';
+  document.getElementById('detailContent').innerHTML=`
+    <div style="background:var(--s2);border:1.5px solid var(--border);border-radius:var(--r16);height:240px;display:flex;align-items:center;justify-content:center;margin-bottom:13px;overflow:hidden"><img src="${pimg(p)}" alt="${p.name}" style="max-width:100%;max-height:100%;object-fit:contain;padding:14px"></div>
+    <span style="background:${CAT_BG[p.category]||'#ede9fe'};padding:3px 10px;border-radius:var(--r99);font-size:10px;font-weight:900;text-transform:capitalize">${p.category}</span>
+    <div style="font-size:19px;font-weight:900;line-height:1.2;margin:9px 0 7px">${p.name}</div>
+    <div class="pc-stars" style="margin-bottom:9px">${sH(p.rating)}<span style="color:var(--muted);font-size:12px;margin-left:5px">${p.rating} · ${p.rc} reviews</span></div>
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px"><div style="font-size:27px;font-weight:900;color:var(--p)">₹${epr}</div>${p.discount?`<div style="font-size:14px;color:var(--light);text-decoration:line-through">₹${p.price}</div><div style="background:var(--g2);color:var(--g);padding:3px 9px;border-radius:var(--r99);font-size:12px;font-weight:900">${p.discount}% OFF</div>`:''}</div>
+    <div style="font-size:12px;color:${p.stock>0?'var(--g)':'var(--r)'};font-weight:700;margin-bottom:11px">${p.stock>0?`✅ ${p.stock} in stock`:'❌ Out of Stock'}</div>
+    <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:16px">${p.description||''}</div>
+    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+      <button class="btn bp" onclick="addCart(${p.id})" ${p.stock<1?'disabled':''} style="flex:2"><i class="fas fa-cart-plus"></i> Cart Mein Daalo</button>
+      <button class="buy-btn btn" onclick="openBuyNow(${p.id})" ${p.stock<1?'disabled':''} style="flex:2"><i class="fas fa-bolt"></i> Buy Now</button>
+      <button class="btn bo" onclick="toggleWish(${p.id})" style="flex:1"><i class="fas fa-heart"></i></button>
+      ${isA?`<button class="btn bo bsm" onclick="openEditProd(${p.id})"><i class="fas fa-pen"></i></button>`:''}
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:16px;font-weight:900">⭐ Reviews</div><button class="btn bo bsm" onclick="openRevModal(${p.id})"><i class="fas fa-star"></i> Likhein</button></div>
+    ${revs.length?revs.map(r=>`<div style="background:var(--s2);border:1.5px solid var(--border);border-radius:var(--r12);padding:11px;margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><div style="font-weight:800;font-size:13px">${r.userName}</div><div class="pc-stars">${sH(r.rating)}</div></div><div style="font-size:13px;color:var(--muted)">${r.comment}</div><div style="font-size:10px;color:var(--light);margin-top:3px">${r.date}</div></div>`).join(''):`<div class="empty"><span class="ei" style="font-size:36px">💬</span><p>Koi review nahi</p><small>Pehla review aap likhein!</small></div>`}`;
+  goto('detail');
+}
+
+// ================================================================
+// BUY NOW
+// ================================================================
+function openBuyNow(id){
+  const p=S.products.find(x=>x.id===id); if(!p||p.stock<1){toast('Out of stock!','e');return;}
+  document.getElementById('bnPid').value=id;
+  document.getElementById('bnPhone').value=S.user.phone||'';
+  document.getElementById('bnAddr').value=S.user.address||'';
+  document.getElementById('bnProdInfo').innerHTML=`<img src="${pimg(p)}" style="width:50px;height:50px;object-fit:contain;background:var(--s2);border-radius:9px;padding:4px;border:1px solid var(--border)"><div><div style="font-weight:800;font-size:14px">${p.name}</div><div style="font-size:16px;font-weight:900;color:var(--p)">₹${ep(p)}</div></div>`;
+  document.getElementById('bnWrap').classList.add('open');
+}
+function doBuyNow(){
+  const pid=parseInt(document.getElementById('bnPid').value);
+  const phone=document.getElementById('bnPhone').value.replace(/\D/g,'');
+  const addr=document.getElementById('bnAddr').value.trim();
+  const pay=document.getElementById('bnPay').value;
+  const p=S.products.find(x=>x.id===pid);
+  if(!phone||phone.length<10){toast('Valid phone number likhein!','e');return;}
+  if(!addr){toast('Address likhein!','e');return;}
+  if(!p||p.stock<1){toast('Out of stock!','e');return;}
+  const epr=ep(p);
+  const oid='QB-'+Date.now();
+  const o={id:oid,userId:S.user.username,userName:S.user.name,userPhone:phone,items:[{id:p.id,name:p.name,qty:1,price:epr,image:pimg(p)}],subtotal:epr,discount:0,shipping:epr>=FREE_MIN?0:49,total:epr+(epr>=FREE_MIN?0:49),address:addr,lat:null,lng:null,payment:pay,coupon:'',status:'processing',date:new Date().toLocaleDateString('en-IN'),createdAt:new Date().toISOString()};
+  p.stock=Math.max(0,p.stock-1);
+  if(!S.orders[S.user.username]) S.orders[S.user.username]=[];
+  S.orders[S.user.username].unshift(o);
+  saveAll(); saveCW(); updateBadges();
+  document.getElementById('bnWrap').classList.remove('open');
+  // WA notify
+  const msg=`⚡ *BUY NOW ORDER — QuickBuy*%0A%0A📋 *Order:* ${oid}%0A👤 *Customer:* ${S.user.name}%0A📱 *Phone:* ${phone}%0A📦 *Product:* ${p.name} ×1%0A💰 *Total:* ₹${o.total}%0A💳 *Payment:* ${pay}%0A🏠 *Address:* ${addr.replace(/\n/g,' ')}`;
+  setTimeout(()=>window.open(`https://wa.me/${WA}?text=${msg}`,'_blank'),500);
+  toast(`Buy Now Order place ho gaya! 🎉`,'s');
+  document.getElementById('ordDot').style.display='block';
+  goto('orders');
+}
+
+// ================================================================
+// CART
+// ================================================================
+function addCart(id){ const p=S.products.find(x=>x.id===id); if(!p||p.stock<1){toast('Out of stock!','e');return;} const ex=S.cart.find(i=>i.id===id); if(ex){if(ex.qty<p.stock)ex.qty++;else{toast('Stock limit!','e');return;}}else S.cart.push({id,qty:1}); saveCW(); updateBadges(); toast(`${p.name} cart mein! 🛒`,'s'); }
+function rmCart(id){ S.cart=S.cart.filter(i=>i.id!==id); saveCW(); updateBadges(); renderCart(); }
+function updQty(id,d){ const it=S.cart.find(i=>i.id===id),p=S.products.find(x=>x.id===id); if(!it||!p)return; const nq=it.qty+d; if(nq<=0){rmCart(id);return;} if(nq>p.stock){toast('Stock limit!','e');return;} it.qty=nq; saveCW(); renderCart(); updateBadges(); }
+function renderCart(){
+  const body=document.getElementById('cBody'),foot=document.getElementById('cFoot');
+  if(!S.cart.length){body.innerHTML=`<div class="empty"><span class="ei">🛒</span><p>Cart khali hai</p><small>Kuch add karo!</small></div>`;foot.innerHTML='';return;}
+  let sub=0,html='';
+  S.cart.forEach(it=>{const p=S.products.find(x=>x.id===it.id);if(!p)return;const epr=ep(p);sub+=epr*it.qty;
+    html+=`<div class="ci"><img class="ci-img" src="${pimg(p)}" alt="${p.name}"><div class="ci-info"><div class="ci-name">${p.name}</div><div class="ci-pr">₹${epr} × ${it.qty} = ₹${epr*it.qty}</div><div class="qrow"><div class="qb" onclick="updQty(${it.id},-1)">−</div><div class="qv">${it.qty}</div><div class="qb" onclick="updQty(${it.id},1)">+</div><button class="qrm" onclick="rmCart(${it.id})"><i class="fas fa-trash"></i></button></div></div></div>`;
+  });
+  body.innerHTML=html;
+  const disc=S.coupon?Math.round(sub*S.coupon.pct/100):0;
+  const ship=sub>=FREE_MIN?0:49, total=sub-disc+ship;
+  const pct=Math.min(100,Math.round(sub/FREE_MIN*100));
+  foot.innerHTML=`
+    <div class="cpn-row"><input class="inp" id="cpnInp2" placeholder="Coupon code (SAVE20, QB10)" style="border-radius:var(--r8)"><button class="btn bp bsm" onclick="applyCouponCart()">Apply</button></div>
+    <div class="del-prog-wrap"><div class="del-msg">${ship===0?'🎉 Free Delivery! Mazaa aa gaya!':'₹'+(FREE_MIN-sub)+' aur add karo — FREE Delivery!'}</div><div class="del-bar"><div class="del-fill" style="width:${pct}%"></div></div></div>
+    <div class="trow" style="margin-top:9px"><span>Subtotal</span><span>₹${sub}</span></div>
+    ${disc?`<div class="trow" style="color:var(--g)"><span>Coupon (${S.coupon.lbl})</span><span>-₹${disc}</span></div>`:''}
+    <div class="trow"><span>Delivery</span><span>${ship===0?'<span style="color:var(--g)">FREE ✅</span>':'₹'+ship}</span></div>
+    <div class="trow big"><span>Total</span><span>₹${total}</span></div>
+    <button class="co-btn" onclick="openCheckout()"><i class="fas fa-bolt"></i> Checkout — ₹${total}</button>`;
+}
+function showCart(){ renderCart(); document.getElementById('cOvr').classList.add('open'); document.getElementById('cDrw').classList.add('open'); }
+function hideCart(){ document.getElementById('cOvr').classList.remove('open'); document.getElementById('cDrw').classList.remove('open'); }
+function applyCouponCart(){ const c=document.getElementById('cpnInp2')?.value.trim().toUpperCase(); if(COUPONS[c]){S.coupon=COUPONS[c];toast(`Coupon: ${S.coupon.lbl} applied! 🎉`,'s');renderCart();}else{S.coupon=null;toast('Invalid coupon!','e');} }
+function applyCoupon(){ const c=document.getElementById('cpnInp')?.value.trim().toUpperCase(); if(COUPONS[c]){S.coupon=COUPONS[c];toast(`Coupon: ${S.coupon.lbl} applied! 🎉`,'s');}else{S.coupon=null;toast('Invalid coupon!','e');} }
+function selPay(el){ document.querySelectorAll('.po').forEach(o=>o.classList.remove('sel')); el.classList.add('sel'); S.payMethod=el.dataset.p; }
+
+// ================================================================
+// GPS — PROPER FIX
+// ================================================================
+function gpsState(s){ ['gpsIdle','gpsLoad','gpsDone','gpsErr'].forEach(id=>document.getElementById(id)?.classList.remove('show')); const el=document.getElementById(s); if(el)el.classList.add('show'); }
+function resetGPS(){ S.lat=null; S.lng=null; S.locName=''; gpsState('gpsIdle'); }
+function startGPS(){
+  if(!navigator.geolocation){ toast('GPS support nahi is device mein','e'); showManualLocation(); return; }
+  gpsState('gpsLoad');
+  navigator.geolocation.getCurrentPosition(
+    onGPSSuccess,
+    onGPSError,
+    {enableHighAccuracy:true, timeout:15000, maximumAge:0}
+  );
+}
+function onGPSSuccess(pos){
+  S.lat=pos.coords.latitude; S.lng=pos.coords.longitude;
+  const acc=Math.round(pos.coords.accuracy);
+  document.getElementById('gpsCoordsText').textContent=`📍 ${S.lat.toFixed(6)}, ${S.lng.toFixed(6)}`;
+  document.getElementById('gpsAccText').textContent=`Accuracy: ±${acc} meters`;
+  document.getElementById('gpsMapLink').href=`https://www.google.com/maps?q=${S.lat},${S.lng}`;
+  gpsState('gpsDone');
+  // Reverse geocode
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${S.lat}&lon=${S.lng}`,{headers:{'Accept-Language':'en','User-Agent':'QuickBuyApp/1.0'}})
+    .then(r=>r.json()).then(d=>{
+      S.locName=d.display_name||'Location captured';
+      document.getElementById('gpsLocName').textContent='📍 '+S.locName.substring(0,70)+'...';
+      if(!document.getElementById('delivAddr').value) document.getElementById('delivAddr').value=S.locName;
+    }).catch(()=>{ document.getElementById('gpsLocName').textContent='📍 Location captured successfully'; });
+  toast('GPS location mil gayi! ✅','s');
+}
+function onGPSError(err){
+  const msgs={
+    1:{m:'Location Permission Denied!', t:'Settings mein jaao aur location allow karo:\n• Chrome: Address bar ka lock icon → Location → Allow\n• Safari: Settings → Safari → Location → Allow'},
+    2:{m:'Location Signal Nahi Mila', t:'Indoor mein ho? Bahar jaao ya WiFi on karo. Dubara try karo.'},
+    3:{m:'Timeout — Bahut Time Lag Gaya', t:'Network slow hai. Dubara try karo ya manual address likhein.'},
+  };
+  const msg=msgs[err.code]||{m:'Unknown Error',t:'Dubara try karo ya manual address likhein'};
+  document.getElementById('gpsErrMsg').textContent=msg.m;
+  document.getElementById('gpsErrTip').textContent=msg.t;
+  gpsState('gpsErr');
+  toast('GPS error: '+msg.m,'e');
+}
+
+// ================================================================
+// CHECKOUT
+// ================================================================
+function openCheckout(){
+  if(!S.cart.length){toast('Cart khali hai!','e');return;}
+  let sub=0; S.cart.forEach(i=>{const p=S.products.find(x=>x.id===i.id);if(p)sub+=ep(p)*i.qty;});
+  const disc=S.coupon?Math.round(sub*S.coupon.pct/100):0,ship=sub>=FREE_MIN?0:49,total=sub-disc+ship;
+  document.getElementById('orderSumm').innerHTML=`<div style="font-weight:900;font-size:13px;margin-bottom:8px">${S.cart.length} items</div>${S.cart.map(i=>{const p=S.products.find(x=>x.id===i.id);if(!p)return'';return`<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px"><span>${p.name} ×${i.qty}</span><span>₹${ep(p)*i.qty}</span></div>`;}).join('')}${disc?`<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--g);font-weight:800;margin-bottom:4px"><span>Coupon</span><span>-₹${disc}</span></div>`:''}<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px"><span>Delivery</span><span>${ship===0?'Free':'₹'+ship}</span></div><div style="display:flex;justify-content:space-between;font-size:17px;font-weight:900;color:var(--p);margin-top:7px;padding-top:7px;border-top:1px solid var(--border)"><span>Total</span><span>₹${total}</span></div>`;
+  resetGPS();
+  document.getElementById('coWrap').classList.add('open');
+}
+function placeOrder(){
+  const addr=document.getElementById('delivAddr').value.trim();
+  if(!addr){toast('Delivery address likhein!','e');return;}
+  let sub=0,items=[];
+  S.cart.forEach(i=>{const p=S.products.find(x=>x.id===i.id);if(p){sub+=ep(p)*i.qty;items.push({id:p.id,name:p.name,qty:i.qty,price:ep(p),image:pimg(p)});p.stock=Math.max(0,p.stock-i.qty);}});
+  const disc=S.coupon?Math.round(sub*S.coupon.pct/100):0,ship=sub>=FREE_MIN?0:49,total=sub-disc+ship;
+  const oid='QB-'+Date.now();
+  const o={id:oid,userId:S.user.username,userName:S.user.name,userPhone:S.user.phone||'N/A',items,subtotal:sub,discount:disc,shipping:ship,total,address:addr,lat:S.lat,lng:S.lng,payment:S.payMethod,coupon:S.coupon?.lbl||'',status:'processing',date:new Date().toLocaleDateString('en-IN'),createdAt:new Date().toISOString()};
+  if(!S.orders[S.user.username]) S.orders[S.user.username]=[];
+  S.orders[S.user.username].unshift(o);
+  S.cart=[]; S.coupon=null; S.lat=null; S.lng=null; S.locName='';
+  saveCW(); saveAll(); updateBadges();
+  document.getElementById('coWrap').classList.remove('open'); hideCart();
+  // WhatsApp notify
+  const il=items.map(i=>`• ${i.name} ×${i.qty} = ₹${i.price*i.qty}`).join('%0A');
+  const locL=o.lat?`%0A📍 *GPS:* https://maps.google.com/?q=${o.lat},${o.lng}`:'';
+  const msg=`🛍️ *NAYA ORDER — QuickBuy*%0A%0A📋 *ID:* ${oid}%0A👤 *Customer:* ${S.user.name}%0A📱 *Phone:* ${S.user.phone||'N/A'}%0A📅 *Date:* ${o.date}%0A💳 *Payment:* ${S.payMethod.toUpperCase()}%0A${o.coupon?`🎫 *Coupon:* ${o.coupon}%0A`:''}%0A🛒 *Items:*%0A${il}%0A%0A💰 *Subtotal:* ₹${sub}%0A${disc?`💸 *Discount:* -₹${disc}%0A`:''} 🚚 *Delivery:* ${ship===0?'FREE':'₹'+ship}%0A✅ *Total:* ₹${total}%0A%0A🏠 *Address:* ${addr.replace(/\n/g,' ')}${locL}`;
+  setTimeout(()=>window.open(`https://wa.me/${WA}?text=${msg}`,'_blank'),600);
+  toast('Order ho gaya! WhatsApp pe notification bheja ja raha hai 🎉','s');
+  document.getElementById('ordDot').style.display='block';
+  goto('orders');
+}
+
+// ================================================================
+// WISHLIST
+// ================================================================
+function toggleWish(id,e){ if(e)e.stopPropagation(); const i=S.wishlist.indexOf(id); if(i===-1){S.wishlist.push(id);toast('Wishlist mein add ❤️','s');}else{S.wishlist.splice(i,1);toast('Wishlist se remove ho gaya');} saveCW(); updateBadges(); }
+function renderWishlist(){ const g=document.getElementById('wishGrid'),ps=S.products.filter(p=>S.wishlist.includes(p.id)); if(!ps.length){g.innerHTML=`<div class="empty" style="grid-column:1/-1"><span class="ei">💔</span><p>Wishlist khali hai</p><small>Products add karo!</small></div>`;return;} g.innerHTML=ps.map(p=>pcH(p,false)).join(''); }
+
+// ================================================================
+// ORDERS + TRACKER
+// ================================================================
+function renderOrders(){
+  const c=document.getElementById('ordersC'),os=S.orders[S.user.username]||[];
+  if(!os.length){c.innerHTML=`<div class="empty"><span class="ei">📦</span><p>Koi order nahi</p><small>Shopping shuru karo!</small></div>`;return;}
+  c.innerHTML=os.map(o=>ocH(o,false)).join('');
+  document.getElementById('ordDot').style.display='none';
+}
+function ocH(o,isA){
+  const si=SORD.indexOf(o.status);
+  const trk=o.status!=='cancelled'?`<div class="tracker"><div class="trk-t"><i class="fas fa-route"></i> Live Delivery Tracker</div><div class="tsteps">${STEPS.map(s=>{const i=SORD.indexOf(s.k),done=i<si,cur=i===si;return`<div class="ts ${done?'done':''} ${cur?'cur':''}"><div class="ts-ico">${s.e}</div><div class="ts-inf"><div class="ts-n" style="color:${done?'var(--g)':cur?'var(--p)':'var(--muted)'}">${s.n}</div><div class="ts-d">${s.d}</div>${cur?'<div class="ts-tag">▶ Abhi Yahan Hai</div>':''}</div></div>`;}).join('')}</div></div>`:`<div style="background:var(--r2);border-radius:var(--r8);padding:9px;margin-top:8px;font-size:13px;font-weight:700;color:var(--r)">❌ Order cancel ho gaya</div>`;
+  const locH=o.lat&&o.lng?`<a href="https://www.google.com/maps?q=${o.lat},${o.lng}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;background:#dbeafe;color:#1d4ed8;border-radius:var(--r8);padding:6px 12px;font-size:12px;font-weight:800;margin-top:8px;text-decoration:none"><i class="fas fa-map-marker-alt"></i> GPS Map</a>`:`<div style="font-size:11px;color:var(--muted);margin-top:7px;background:var(--s2);border-radius:7px;padding:7px">📍 ${o.address}</div>`;
+  const cancelBtn=!isA&&canCancel(o.status)?`<button class="btn br bsm" style="margin-top:8px" onclick="cancelOrder('${o.id}','${o.userId}')"><i class="fas fa-times"></i> Order Cancel Karein</button>`:'';
+  const aActions=isA?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;padding-top:9px;border-top:1px solid var(--border)"><button class="ab ab-p" onclick="openStModal('${o.id}','${o.userId}','${o.status}')"><i class="fas fa-sync"></i> Status</button><a href="tel:${o.userPhone}" class="ab ab-g"><i class="fas fa-phone-alt"></i> ${o.userPhone}</a><a href="https://wa.me/${o.userPhone.replace(/\D/g,'')}" target="_blank" class="ab" style="background:#d1fae5;color:#059669"><i class="fab fa-whatsapp"></i></a>${o.lat&&o.lng?`<a href="https://www.google.com/maps?q=${o.lat},${o.lng}" target="_blank" class="ab ab-b"><i class="fas fa-map-marker-alt"></i> Map</a>`:''}</div>`:'';
+  return `<div class="oc"><div class="oc-hdr"><div><div class="oc-id">${o.id}</div><div class="oc-meta">${o.date} · ${o.payment.toUpperCase()}${o.coupon?` · 🎫 ${o.coupon}`:''}${isA?` · <b>${o.userName} (${o.userPhone})</b>`:''}</div></div><div style="display:flex;align-items:center;gap:6px"><span class="st st-${o.status}">${slbl(o.status)}</span><span style="font-size:16px;font-weight:900;color:var(--p)">₹${o.total}</span></div></div><div class="oc-body">${o.items.map(i=>`<div class="oi-row"><img class="oi-th" src="${i.image}" alt="${i.name}"><div style="flex:1"><div style="font-weight:700;font-size:13px">${i.name}</div><div style="font-size:11px;color:var(--muted)">×${i.qty} @ ₹${i.price}</div></div><div style="font-weight:900;font-size:13px">₹${i.price*i.qty}</div></div>`).join('')}${trk}${locH}${cancelBtn}${aActions}</div></div>`;
+}
+function cancelOrder(oid,uid){ if(!confirm('Order cancel karna chahte hain?')) return; if(S.orders[uid]){const o=S.orders[uid].find(x=>x.id===oid);if(o&&canCancel(o.status)){o.status='cancelled';saveAll();toast('Order cancel ho gaya!','s');renderOrders();}else toast('Yeh order cancel nahi ho sakta!','e');} }
+
+// ================================================================
+// REVIEWS
+// ================================================================
+function openRevModal(id){ document.getElementById('revPid').value=id; S.rV=0; document.querySelectorAll('#revStars span').forEach(s=>s.style.color='#e5e7eb'); document.getElementById('revTxt').value=''; document.getElementById('revWrap').classList.add('open'); }
+function setRat(v){ S.rV=v; document.querySelectorAll('#revStars span').forEach(s=>s.style.color=parseInt(s.dataset.v)<=v?'#f59e0b':'#e5e7eb'); }
+function submitRev(){ const pid=parseInt(document.getElementById('revPid').value),txt=document.getElementById('revTxt').value.trim(); if(!S.rV){toast('Rating select karein!','e');return;} if(!txt){toast('Comment likhein!','e');return;} if(!S.reviews[pid])S.reviews[pid]=[]; S.reviews[pid].unshift({userName:S.user.name,rating:S.rV,comment:txt,date:new Date().toLocaleDateString('en-IN')}); const p=S.products.find(x=>x.id===pid); if(p){const all=S.reviews[pid];p.rating=Math.round(all.reduce((s,r)=>s+r.rating,0)/all.length*10)/10;p.rc=all.length;} saveAll(); document.getElementById('revWrap').classList.remove('open'); toast('Review submit ho gaya! ⭐','s'); openDetail(pid); }
+
+// ================================================================
+// PROFILE
+// ================================================================
+function renderProfile(){
+  const u=S.user,os=S.orders[u.username]||[],spent=os.reduce((s,o)=>s+o.total,0);
+  document.getElementById('profileC').innerHTML=`
+    <div class="p-hero"><div class="p-av">${u.name[0]}</div><div><div class="p-nm">${u.name}</div><div class="p-role">@${u.username} · ${u.role==='admin'?'🔑 Admin':'👤 Customer'}</div></div></div>
+    <div class="pstats"><div class="pst"><div class="pst-v">${os.length}</div><div class="pst-l">Orders</div></div><div class="pst"><div class="pst-v">${S.wishlist.length}</div><div class="pst-l">Wishlist</div></div><div class="pst"><div class="pst-v">₹${spent}</div><div class="pst-l">Spent</div></div></div>
+    <div class="sc">
+      <div class="sc-t"><i class="fas fa-user"></i> Account Info</div>
+      <div class="sr"><div class="sr-ico" style="background:#dbeafe;color:#2563eb"><i class="fas fa-envelope"></i></div><div class="sr-info"><strong>${u.email||'N/A'}</strong><small>Email</small></div></div>
+      <div class="sr"><div class="sr-ico" style="background:var(--g2);color:var(--g)"><i class="fas fa-phone-alt"></i></div><div class="sr-info"><strong>${u.phone||'Not set'}</strong><small>Phone</small></div>${u.phone?`<a href="tel:${u.phone}" style="font-size:11px;font-weight:900;color:var(--g);background:var(--g2);padding:4px 9px;border-radius:8px"><i class="fas fa-phone-alt"></i></a>`:''}</div>
+      <div class="sr"><div class="sr-ico" style="background:#fef3c7;color:#d97706"><i class="fas fa-calendar"></i></div><div class="sr-info"><strong>${u.joined}</strong><small>Joined</small></div></div>
+    </div>
+    <div class="sc">
+      <div class="sc-t"><i class="fas fa-edit"></i> Profile Update Karein</div>
+      <div class="iw"><label>Phone</label><input class="inp" id="updPh" value="${u.phone||''}" type="tel" placeholder="9819879709"></div>
+      <div class="iw"><label>Address</label><input class="inp" id="updAddr" value="${u.address||''}" placeholder="Ghar ka address"></div>
+      <button class="btn bp bfull" onclick="updInfo()"><i class="fas fa-save"></i> Save Karein</button>
+    </div>
+    <div class="sc">
+      <div class="sc-t"><i class="fas fa-lock"></i> Password Change Karein</div>
+      <div class="iw"><label>Current Password</label><input type="password" class="inp" id="cP"></div>
+      <div class="iw"><label>New Password</label><input type="password" class="inp" id="nP"></div>
+      <div class="iw"><label>Confirm</label><input type="password" class="inp" id="cfP"></div>
+      <button class="btn bp bfull" onclick="chgPwd()"><i class="fas fa-key"></i> Update Password</button>
+    </div>
+    <div class="sc">
+      <div class="sc-t"><i class="fas fa-palette"></i> App Settings</div>
+      <div class="sr" onclick="toggleDark()"><div class="sr-ico" style="background:var(--s3);color:var(--p)"><i class="fas fa-moon"></i></div><div class="sr-info"><strong>Dark Mode</strong><small>${S.darkMode?'ON — Dark theme active':'OFF — Light theme active'}</small></div><div class="dm-toggle ${S.darkMode?'on':''}" id="dmToggle"><div class="dm-knob"></div></div></div>
+      <div class="sr" onclick="showInstall()"><div class="sr-ico" style="background:var(--p3);color:var(--p)"><i class="fas fa-download"></i></div><div class="sr-info"><strong>Home Screen Pe Add Karein</strong><small>App ki tarah use karo</small></div><i class="fas fa-chevron-right" style="color:var(--light);font-size:12px"></i></div>
+    </div>
+    <div class="sc">
+      <div class="sc-t"><i class="fas fa-headset"></i> Customer Support</div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <a href="tel:+919819879709" style="display:inline-flex;align-items:center;gap:7px;background:#dbeafe;color:#1d4ed8;border-radius:var(--r12);padding:11px 15px;font-weight:900;font-size:13px"><i class="fas fa-phone-alt"></i> +91 98198 79709</a>
+        <a href="https://wa.me/919819879709" target="_blank" style="display:inline-flex;align-items:center;gap:7px;background:#d1fae5;color:#059669;border-radius:var(--r12);padding:11px 15px;font-weight:900;font-size:13px"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      </div>
+    </div>
+    <div class="sc"><div class="sr" onclick="doLogout()" style="padding:9px 0"><div class="sr-ico" style="background:var(--r2);color:var(--r)"><i class="fas fa-sign-out-alt"></i></div><div class="sr-info"><strong style="color:var(--r)">Logout</strong><small>Account se bahar jaao</small></div></div></div>`;
+}
+function updInfo(){ const ph=document.getElementById('updPh').value.replace(/\D/g,''),addr=document.getElementById('updAddr').value.trim(); if(ph&&ph.length<10){toast('Valid 10-digit phone!','e');return;} if(ph)S.user.phone=ph; if(addr)S.user.address=addr; S.users[S.user.username].phone=S.user.phone; S.users[S.user.username].address=S.user.address; saveAll(); toast('Update ho gaya! 📱','s'); }
+function chgPwd(){ const c=document.getElementById('cP').value,n=document.getElementById('nP').value,cf=document.getElementById('cfP').value; if(c!==S.user.password){toast('Current password galat!','e');return;} if(n.length<4){toast('Min 4 chars!','e');return;} if(n!==cf){toast('Match nahi!','e');return;} S.user.password=n; S.users[S.user.username].password=n; saveAll(); toast('Password change ho gaya 🔐','s'); }
+
+// ================================================================
+// ADMIN
+// ================================================================
+function renderAdmin(){
+  if(S.user?.role!=='admin'){goto('home');return;}
+  const all=Object.values(S.orders).flat(),rev=all.reduce((s,o)=>s+o.total,0);
+  document.getElementById('adminStats').innerHTML=`
+    <div class="as"><div class="as-ico" style="background:var(--p3);color:var(--p)"><i class="fas fa-box"></i></div><div class="as-v">${S.products.length}</div><div class="as-l">Products</div></div>
+    <div class="as"><div class="as-ico" style="background:#dbeafe;color:#2563eb"><i class="fas fa-users"></i></div><div class="as-v">${Object.keys(S.users).length}</div><div class="as-l">Users</div></div>
+    <div class="as"><div class="as-ico" style="background:var(--g2);color:var(--g)"><i class="fas fa-receipt"></i></div><div class="as-v">${all.length}</div><div class="as-l">Orders</div></div>
+    <div class="as"><div class="as-ico" style="background:#fef3c7;color:#d97706"><i class="fas fa-rupee-sign"></i></div><div class="as-v">₹${rev}</div><div class="as-l">Revenue</div></div>`;
+  aTab('products',document.querySelector('.tbtn.on')||document.querySelector('.tbtn'));
+}
+function aTab(tab,el){
+  if(S.user?.role!=='admin')return;
+  if(el){document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+  const c=document.getElementById('adminContent');
+  if(tab==='products'){
+    c.innerHTML=`<div class="tw"><table class="dt"><thead><tr><th>Img</th><th>Name</th><th>Cat</th><th>Price</th><th>Stock</th><th>Edit/Del</th></tr></thead><tbody>${S.products.map(p=>`<tr><td><img class="tth" src="${pimg(p)}" alt="${p.name}"></td><td style="font-weight:700;max-width:120px">${p.name}</td><td><span class="catbadge" style="background:${CAT_BG[p.category]||'#ede9fe'}">${p.category}</span></td><td style="font-weight:900;color:var(--p)">₹${ep(p)}${p.discount?`<br><span style="color:var(--g);font-size:10px">-${p.discount}%</span>`:''}</td><td style="font-weight:700;color:${p.stock>10?'var(--g)':p.stock>0?'var(--o)':'var(--r)'}">${p.stock}</td><td><div style="display:flex;gap:4px"><button class="ab ab-p" onclick="openEditProd(${p.id})"><i class="fas fa-pen"></i></button><button class="ab ab-r" onclick="delProd(${p.id})"><i class="fas fa-trash"></i></button></div></td></tr>`).join('')}</tbody></table></div>`;
+  }else if(tab==='users'){
+    c.innerHTML=`<div class="tw"><table class="dt"><thead><tr><th>Name</th><th>Phone</th><th>Role</th><th>Orders</th><th>Remove</th></tr></thead><tbody>${Object.values(S.users).map(u=>`<tr><td><div style="font-weight:700">${u.name}</div><div style="font-size:11px;color:var(--muted)">@${u.username}</div></td><td>${u.phone?`<div style="display:flex;align-items:center;gap:4px"><span style="font-size:12px;font-weight:700">${u.phone}</span><a href="tel:${u.phone}" class="ab ab-g" style="font-size:10px"><i class="fas fa-phone-alt"></i></a><a href="https://wa.me/${u.phone.replace(/\D/g,'')}" target="_blank" class="ab" style="background:#d1fae5;color:#059669;font-size:10px"><i class="fab fa-whatsapp"></i></a></div>`:'N/A'}</td><td><span class="tag" style="background:${u.role==='admin'?'var(--p3)':'#dbeafe'};color:${u.role==='admin'?'var(--p)':'#2563eb'}">${u.role}</span></td><td style="font-weight:700">${(S.orders[u.username]||[]).length}</td><td>${u.role!=='admin'?`<button class="ab ab-r" onclick="removeUser('${u.username}')"><i class="fas fa-user-times"></i></button>`:'🔒'}</td></tr>`).join('')}</tbody></table></div>`;
+  }else if(tab==='orders'){
+    const all=Object.values(S.orders).flat().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    if(!all.length){c.innerHTML=`<div class="empty"><span class="ei">📋</span><p>Koi order nahi</p></div>`;return;}
+    c.innerHTML=all.map(o=>ocH(o,true)).join('');
+  }
+}
+function removeUser(uname){ if(S.user?.role!=='admin')return; if(uname==='admin'){toast('Admin protected!','e');return;} if(!confirm(`"${S.users[uname]?.name}" ko permanently remove karna chahte hain?`))return; delete S.users[uname]; delete S.orders[uname]; localStorage.removeItem('qb_c_'+uname); localStorage.removeItem('qb_w_'+uname); localStorage.removeItem('qb_rv_'+uname); saveAll(); toast('User remove ho gaya!','s'); aTab('users',null); renderAdmin(); }
+
+// ================================================================
+// PRODUCT CRUD
+// ================================================================
+function openAddProd(){ if(S.user?.role!=='admin'){toast('Permission nahi!','e');return;} document.getElementById('pmTitle').textContent='Product Add Karein'; document.getElementById('pmEid').value=''; document.getElementById('pmN').value=''; document.getElementById('pmP').value=''; document.getElementById('pmS').value=''; document.getElementById('pmDesc').value=''; document.getElementById('pmD').value='0'; document.getElementById('pmCat').value='electronics'; document.getElementById('pmImgD').value=''; document.getElementById('pmImg').value=''; document.getElementById('pmPrev').style.display='none'; document.getElementById('pmWrap').classList.add('open'); }
+function openEditProd(id){ if(S.user?.role!=='admin'){toast('Permission nahi!','e');return;} const p=S.products.find(x=>x.id===id);if(!p)return; document.getElementById('pmTitle').textContent='Product Edit Karein'; document.getElementById('pmEid').value=id; document.getElementById('pmN').value=p.name; document.getElementById('pmP').value=p.price; document.getElementById('pmS').value=p.stock; document.getElementById('pmCat').value=p.category; document.getElementById('pmDesc').value=p.description||''; document.getElementById('pmD').value=p.discount||0; document.getElementById('pmImgD').value=p.image||''; document.getElementById('pmImg').value=''; if(p.image){document.getElementById('pmPrev').src=p.image;document.getElementById('pmPrev').style.display='block';}else document.getElementById('pmPrev').style.display='none'; document.getElementById('pmWrap').classList.add('open'); }
+function closePM(){ document.getElementById('pmWrap').classList.remove('open'); }
+function prevImg(inp){ const f=inp.files[0]; if(!f)return; if(f.size>2*1024*1024){toast('Image 2MB se choti honi chahiye!','e');inp.value='';return;} const r=new FileReader(); r.onload=e=>{document.getElementById('pmImgD').value=e.target.result;document.getElementById('pmPrev').src=e.target.result;document.getElementById('pmPrev').style.display='block';}; r.readAsDataURL(f); }
+function saveProd(){
+  if(S.user?.role!=='admin'){toast('Permission nahi!','e');return;}
+  const name=document.getElementById('pmN').value.trim(),price=parseInt(document.getElementById('pmP').value),stock=parseInt(document.getElementById('pmS').value);
+  const cat=document.getElementById('pmCat').value,desc=document.getElementById('pmDesc').value.trim(),disc=Math.max(0,Math.min(90,parseInt(document.getElementById('pmD').value)||0));
+  const img=document.getElementById('pmImgD').value,eid=document.getElementById('pmEid').value;
+  if(!name){toast('Product naam likhein!','e');return;} if(!price||price<1){toast('Valid price likhein!','e');return;} if(isNaN(stock)||stock<0){toast('Valid stock likhein!','e');return;}
+  if(eid){const idx=S.products.findIndex(p=>p.id===parseInt(eid));if(idx!==-1)S.products[idx]={...S.products[idx],name,price,stock,category:cat,description:desc,discount:disc,image:img||S.products[idx].image,badge:disc>0?'sale':'new'};toast('Update ho gaya ✅','s');}
+  else{const nid=S.products.length?Math.max(...S.products.map(p=>p.id))+1:1;S.products.push({id:nid,name,price,stock,category:cat,description:desc,discount:disc,image:img,rating:0,rc:0,badge:disc>0?'sale':'new',createdAt:new Date().toISOString().split('T')[0]});toast('Product add ho gaya 🎉','s');}
+  saveAll();closePM();renderHome();if(document.getElementById('pg-admin').classList.contains('on'))renderAdmin();
+}
+function delProd(id){ if(S.user?.role!=='admin'){toast('Permission nahi!','e');return;} if(!confirm('Delete karna chahte hain?'))return; S.products=S.products.filter(p=>p.id!==id);S.cart=S.cart.filter(i=>i.id!==id);S.wishlist=S.wishlist.filter(w=>w!==id);saveCW();saveAll();updateBadges();toast('Deleted!');renderHome();if(document.getElementById('pg-admin').classList.contains('on'))renderAdmin(); }
+function openStModal(oid,uid,cur){ document.getElementById('stOid').value=oid;document.getElementById('stUid').value=uid;document.getElementById('stSel').value=cur;document.getElementById('stWrap').classList.add('open'); }
+function doUpdateSt(){ const oid=document.getElementById('stOid').value,uid=document.getElementById('stUid').value,ns=document.getElementById('stSel').value; if(S.orders[uid]){const o=S.orders[uid].find(x=>x.id===oid);if(o)o.status=ns;} saveAll();document.getElementById('stWrap').classList.remove('open');toast(`Status: ${slbl(ns)} ✅`,'s');renderAdmin();aTab('orders',null); }
+
+// ================================================================
+// BADGES + COUNTDOWN
+// ================================================================
+function updateBadges(){
+  const cq=S.cart.reduce((s,i)=>s+i.qty,0),cb=document.getElementById('cBadge');cb.textContent=cq;cb.style.display=cq>0?'flex':'none';
+  const wb=document.getElementById('wBadge');wb.textContent=S.wishlist.length;wb.style.display=S.wishlist.length>0?'flex':'none';
+}
+function startCD(){ let t=7200; setInterval(()=>{ if(t<=0)t=7200; t--; const h=Math.floor(t/3600),m=Math.floor((t%3600)/60),s=t%60; document.getElementById('cdH').textContent=String(h).padStart(2,'0'); document.getElementById('cdM').textContent=String(m).padStart(2,'0'); document.getElementById('cdS').textContent=String(s).padStart(2,'0'); },1000); }
+
+// ================================================================
+// EXPOSE
+// ================================================================
+window.addCart=addCart;window.toggleWish=toggleWish;window.rmCart=rmCart;window.updQty=updQty;
+window.openDetail=openDetail;window.openEditProd=openEditProd;window.delProd=delProd;
+window.openRevModal=openRevModal;window.setRat=setRat;window.openStModal=openStModal;
+window.chgPwd=chgPwd;window.updInfo=updInfo;window.selPay=selPay;
+window.startGPS=startGPS;window.resetGPS=resetGPS;window.applyCoupon=applyCoupon;
+window.applyCouponCart=applyCouponCart;window.aTab=aTab;window.removeUser=removeUser;
+window.filterCat=filterCat;window.openBuyNow=openBuyNow;window.doBuyNow=doBuyNow;
+window.cancelOrder=cancelOrder;window.doAndroidInstall=doAndroidInstall;
+window.showInstall=showInstall;window.toggleDark=toggleDark;
+
+// ================================================================
+// BOOT
+// ================================================================
+initData();
+detectPWA();
+setTimeout(()=>{
+  const sp=document.getElementById('splash');
+  sp.style.transition='opacity .6s ease';sp.style.opacity='0';
+  setTimeout(()=>sp.style.display='none',600);
+  const saved=sessionStorage.getItem('qb_s');
+  if(saved&&S.users[saved]){ loginUser(S.users[saved]); }
+  else { document.getElementById('authScreen').style.display='block'; }
+},3200);
+startCD();
+</script>
+</body>
+</html>
